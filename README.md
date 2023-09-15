@@ -52,8 +52,7 @@ Check out the [Google Colab tutorial](//colab.research.google.com/drive/1zd4ri7i
 
 Blender rendering scripts are available in the [scripts/rendering directory](https://github.com/allenai/objaverse-xl/tree/main/scripts/rendering)!
 
-![266879371-69064f78-a752-40d6-bd36-ea7c15ffa1ec](https://github.com/allenai/objaverse-xl/assets/28768645/1999ecec-a656-425a-b685-c201a93a3d67)
-
+![266879371-69064f78-a752-40d6-bd36-ea7c15ffa1ec](https://github.com/allenai/objaverse-xl/assets/28768645/2f042d94-090b-4fd0-b37d-23b5971987ed)
 
 ## License
 
