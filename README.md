@@ -4,6 +4,10 @@
     <img src="https://img.shields.io/badge/arXiv-2307.05663-<COLOR>">
 </a>
 
+This repository contains scripts to download and process Objaverse-XL.
+
+
+
 <img src="https://mattdeitke.com/static/1cdcdb2ef7033e177ca9ae2975a9b451/9c1ca/objaverse-xl.webp">
 
 Objaverse-XL is an open dataset of over 10 million 3D objects!
@@ -46,7 +50,7 @@ Beyond that, we show strong scaling trends for both Zero123-XL and [PixelNeRF](h
 
 ## Tutorial
 
-Check out the [Google Colab tutorial](//colab.research.google.com/drive/1zd4ri7ie_i5TYSUA9xHARh5W8nzrYpwg?usp=sharing) to download Objaverse-XL.
+Check out the [Google Colab tutorial](//colab.research.google.com/drive/1zd4ri7ie_i5TYSUA9xHARh5W8nzrYpwg?usp=sharing) to download Objaverse-XL (work in progress).
 
 ## License
 
