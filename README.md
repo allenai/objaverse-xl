@@ -52,6 +52,13 @@ Beyond that, we show strong scaling trends for both Zero123-XL and [PixelNeRF](h
 
 Check out the [Google Colab tutorial](//colab.research.google.com/drive/1zd4ri7ie_i5TYSUA9xHARh5W8nzrYpwg?usp=sharing) to download Objaverse-XL (work in progress).
 
+## Blender Rendering
+
+Blender rendering scripts are available in the [scripts/rendering directory](https://github.com/allenai/objaverse-xl/tree/main/scripts/rendering)!
+
+![266879371-69064f78-a752-40d6-bd36-ea7c15ffa1ec](https://github.com/allenai/objaverse-xl/assets/28768645/1999ecec-a656-425a-b685-c201a93a3d67)
+
+
 ## License
 
 The use of the dataset as a whole is licensed under the ODC-By v1.0 license. Individual objects in Objaverse-XL are licensed under different licenses.
