@@ -1,11 +1,4 @@
----
-license: odc-by
-language:
-- en
-viewer: false
----
-
-# Objaverse-XL
+# 🪐 Objaverse-XL
 
 <a href="//arxiv.org/abs/2307.05663" target="_blank">
     <img src="https://img.shields.io/badge/arXiv-2307.05663-<COLOR>">
