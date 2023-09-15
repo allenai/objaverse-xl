@@ -1,6 +1,6 @@
 # 🪐 Objaverse-XL Rendering Script
 
-![266879371-69064f78-a752-40d6-bd36-ea7c15ffa1ec](https://github.com/allenai/objaverse-xl/assets/28768645/8ee74ecd-bac4-4800-b14c-ff9594df333c)
+![266879371-69064f78-a752-40d6-bd36-ea7c15ffa1ec](https://github.com/allenai/objaverse-xl/assets/28768645/41edb8e3-d2f6-4299-a7f8-418f1ef28029)
 
 Scripts for rendering Objaverse-XL with [Blender](https://www.blender.org/). Rendering is the process of taking pictures of the 3D objects. These images can then be used for training AI models.
 
@@ -74,7 +74,7 @@ we will see that there is a new `0fde27a0-99f0-5029-8e20-be9b8ecabb59` directory
 
 Here, we see that there are 12 renders `[000-011].png`. Each render will look something like one of the 4 images shown below, but likely with the camera at a different location as its location is randomized during rendering:
 
-![266900773-69d79e26-4df1-4bd2-854c-7d3c888adae7](https://github.com/allenai/objaverse-xl/assets/28768645/4e4e6f8b-bb1b-48ad-a9d8-abc4a91948c4)
+![266900773-69d79e26-4df1-4bd2-854c-7d3c888adae7](https://github.com/allenai/objaverse-xl/assets/28768645/440fe28e-4c5a-4460-a4df-6730028c0b22)
 
 Additionally, there are 12 npy files `[000-011].npy`, which include information about the camera's pose for a given render. We can read the npy files using:
 
