@@ -85,3 +85,4 @@ Objaverse 1.0 is available on 🤗Hugging Face at [@allenai/objaverse](https://h
   year={2022}
 }
 ```
+
