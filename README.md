@@ -4,12 +4,11 @@
     <img src="https://img.shields.io/badge/arXiv-2307.05663-<COLOR>">
 </a>
 
+<img src="https://mattdeitke.com/static/1cdcdb2ef7033e177ca9ae2975a9b451/9c1ca/objaverse-xl.webp">
+
 Objaverse-XL is an open dataset of over 10 million 3D objects!
 
 With it, we train Zero123-XL, a foundation model for 3D, observing incredible 3D generalization abilities: 🧵👇
-
-<img src="https://mattdeitke.com/static/1cdcdb2ef7033e177ca9ae2975a9b451/9c1ca/objaverse-xl.webp">
-
 
 ## Scale Comparison
 
