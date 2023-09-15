@@ -2,8 +2,6 @@
 
 This repository contains scripts to download and process Objaverse-XL.
 
-
-
 <img src="https://mattdeitke.com/static/1cdcdb2ef7033e177ca9ae2975a9b451/9c1ca/objaverse-xl.webp">
 
 Objaverse-XL is an open dataset of over 10 million 3D objects!
