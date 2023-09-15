@@ -137,13 +137,6 @@ Finally, we also have a `metadata.json` file, which contains metadata about the 
 
 USDZ support is experimental. Since Blender does not natively support usdz, we use [this Blender addon](https://github.com/robmcrosby/BlenderUSDZ), but it doesn't work with all types of USDZs. If you have a better solution, PRs are very much welcome 😄!
 
-## 👋 Our Team
-
-Objaverse-XL is an open-source project managed by the [PRIOR team](//prior.allenai.org) at the [Allen Institute for AI](//allenai.org) (AI2).
-AI2 is a non-profit institute with the mission to contribute to humanity through high-impact AI research and engineering.
-
-<br />
-
 <a href="//prior.allenai.org">
 <p align="center"><img width="100%" src="https://raw.githubusercontent.com/allenai/ai2thor/main/doc/static/ai2-prior.svg" /></p>
 </a>
