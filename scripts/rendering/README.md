@@ -136,7 +136,3 @@ Finally, we also have a `metadata.json` file, which contains metadata about the 
 ### 🧑‍🔬️ Experimental Features
 
 USDZ support is experimental. Since Blender does not natively support usdz, we use [this Blender addon](https://github.com/robmcrosby/BlenderUSDZ), but it doesn't work with all types of USDZs. If you have a better solution, PRs are very much welcome 😄!
-
-<a href="//prior.allenai.org">
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/allenai/ai2thor/main/doc/static/ai2-prior.svg" /></p>
-</a>
