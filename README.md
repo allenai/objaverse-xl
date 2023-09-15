@@ -31,17 +31,13 @@ A ton more examples in the [📝 paper](https://arxiv.org/abs/2307.05663) :)
 
 With the base Zero123-XL foundation model, we can perform image → 3D using [DreamFusion](https://dreamfusion3d.github.io/), having the model guide a NeRF to generate novel views!
 
-<video autoplay muted loop controls>
-  <source src="https://github.com/allenai/objaverse-rendering/assets/28768645/571852cd-dc02-46ce-b2bb-88f64a67d0ac" type="video/mp4">
-</video>
+https://github.com/allenai/objaverse-rendering/assets/28768645/571852cd-dc02-46ce-b2bb-88f64a67d0ac
 
 ## Text → 3D
 
 Text-to-3D comes for free with text → image models, such as with SDXL here, providing the initial image!
 
-<video autoplay muted loop controls>
-  <source src="https://github.com/allenai/objaverse-rendering/assets/28768645/96255b42-8158-4c7a-8308-7b0f1257ada8" type="video/mp4">
-</video>
+https://github.com/allenai/objaverse-rendering/assets/28768645/96255b42-8158-4c7a-8308-7b0f1257ada8
 
 ## Scaling Trends
 
