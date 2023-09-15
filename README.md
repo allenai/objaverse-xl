@@ -4,8 +4,6 @@
     <img src="https://img.shields.io/badge/arXiv-2307.05663-<COLOR>">
 </a>
 
-_Uploading is currently in progress!_
-
 Objaverse-XL is an open dataset of over 10 million 3D objects!
 
 With it, we train Zero123-XL, a foundation model for 3D, observing incredible 3D generalization abilities: 🧵👇
