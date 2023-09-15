@@ -1,14 +1,5 @@
 # 🪐 Objaverse-XL
 
-<p align="center">
-    <a href="//arxiv.org/abs/2307.05663" target="_blank">
-        <img src="https://img.shields.io/badge/arXiv-2307.05663-<COLOR>">
-    </a>
-    <a href="//github.com/allenai/ai2thor/blob/main/LICENSE">
-        <img alt="License" src="https://img.shields.io/github/license/allenai/objaverse-xl.svg?color=blue">
-    </a>
-</p>
-
 This repository contains scripts to download and process Objaverse-XL.
 
 
