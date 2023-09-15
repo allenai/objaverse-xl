@@ -1,0 +1,52 @@
+[
+  {
+    "sha256": "d2b9a5d7c47dc93526082c9b630157ab6bce4fd8669610d942176f4a36444e71",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.obj",
+    "source": "github"
+  },
+  {
+    "sha256": "f15f7541614940dedd1ce373dee9cde1cc63471db84081259a44488aca267408",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example-linked.gltf",
+    "source": "github"
+  },
+  {
+    "sha256": "cd567dfd1605a5fd60af1b8ac67e44b6af25b9e3f160da66047bb1187d02a071",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.dae",
+    "source": "github"
+  },
+  {
+    "sha256": "879bc9d2d85e4f3866f0cfef41f5236f9fff5f973380461af9f69cdbed53a0da",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.abc",
+    "source": "github"
+  },
+  {
+    "sha256": "ac69da6df0c83b593902c71238a7721f575233723730150230da95d583466562",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.blend",
+    "source": "github"
+  },
+  {
+    "sha256": "bc4cc8a78bc57d3c41ddaca9135d2b4e66b59e97846e2b796e5cc6b09c62b273",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example-embedded.gltf",
+    "source": "github"
+  },
+  {
+    "sha256": "04e6377317d6818e32c5cbd1951e76deb3641bbf4f6db6933046221d5fbf1c5c",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.glb",
+    "source": "github"
+  },
+  {
+    "sha256": "7037575f47816118e5a34e7c0da9927e1be7be3f5b4adfac337710822eb50fa9",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.fbx",
+    "source": "github"
+  },
+  {
+    "sha256": "10fd5944c3fe32cb25fdcf46319cbda250b98bd22fd87fc41de5769b118d5262",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.stl",
+    "source": "github"
+  },
+  {
+    "sha256": "aa5c41753ad8a91562122d8cafbe1a940146fc3d227b7086eb8c830da36cb42b",
+    "fileIdentifier": "https://github.com/mattdeitke/objaverse-xl-test-files/blob/ead0bed6a76012452273bbe18d12e4d68a881956/example.ply",
+    "source": "github"
+  }
+]
