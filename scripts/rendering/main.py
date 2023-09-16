@@ -393,6 +393,7 @@ def render_objects(
     parsed_gpu_devices: Union[int, List[int]] = 0
     if gpu_devices is None:
         parsed_gpu_devices = len(GPUtil.getGPUs())
+    logger.info(f"Using {parsed_gpu_devices} GPU devices for rendering.")
 
     if processes is None:
         processes = multiprocessing.cpu_count() * 3
