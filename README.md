@@ -1,24 +1,12 @@
----
-license: odc-by
-language:
-- en
-viewer: false
----
+# 🪐 Objaverse-XL
 
-# Objaverse-XL
+This repository contains scripts to download and process Objaverse-XL.
 
-<a href="//arxiv.org/abs/2307.05663" target="_blank">
-    <img src="https://img.shields.io/badge/arXiv-2307.05663-<COLOR>">
-</a>
-
-_Uploading is currently in progress!_
+<img src="https://mattdeitke.com/static/1cdcdb2ef7033e177ca9ae2975a9b451/9c1ca/objaverse-xl.webp">
 
 Objaverse-XL is an open dataset of over 10 million 3D objects!
 
 With it, we train Zero123-XL, a foundation model for 3D, observing incredible 3D generalization abilities: 🧵👇
-
-<img src="https://mattdeitke.com/static/1cdcdb2ef7033e177ca9ae2975a9b451/9c1ca/objaverse-xl.webp">
-
 
 ## Scale Comparison
 
@@ -40,17 +28,13 @@ A ton more examples in the [📝 paper](https://arxiv.org/abs/2307.05663) :)
 
 With the base Zero123-XL foundation model, we can perform image → 3D using [DreamFusion](https://dreamfusion3d.github.io/), having the model guide a NeRF to generate novel views!
 
-<video autoplay muted loop controls>
-  <source src="https://github.com/allenai/objaverse-rendering/assets/28768645/571852cd-dc02-46ce-b2bb-88f64a67d0ac" type="video/mp4">
-</video>
+https://github.com/allenai/objaverse-rendering/assets/28768645/571852cd-dc02-46ce-b2bb-88f64a67d0ac
 
 ## Text → 3D
 
 Text-to-3D comes for free with text → image models, such as with SDXL here, providing the initial image!
 
-<video autoplay muted loop controls>
-  <source src="https://github.com/allenai/objaverse-rendering/assets/28768645/96255b42-8158-4c7a-8308-7b0f1257ada8" type="video/mp4">
-</video>
+https://github.com/allenai/objaverse-rendering/assets/28768645/96255b42-8158-4c7a-8308-7b0f1257ada8
 
 ## Scaling Trends
 
@@ -60,7 +44,13 @@ Beyond that, we show strong scaling trends for both Zero123-XL and [PixelNeRF](h
 
 ## Tutorial
 
-Check out the [Google Colab tutorial](//colab.research.google.com/drive/1zd4ri7ie_i5TYSUA9xHARh5W8nzrYpwg?usp=sharing) to download Objaverse-XL.
+Check out the [Google Colab tutorial](//colab.research.google.com/drive/1zd4ri7ie_i5TYSUA9xHARh5W8nzrYpwg?usp=sharing) to download Objaverse-XL (work in progress).
+
+## Blender Rendering
+
+Blender rendering scripts are available in the [scripts/rendering directory](https://github.com/allenai/objaverse-xl/tree/main/scripts/rendering)!
+
+![266879371-69064f78-a752-40d6-bd36-ea7c15ffa1ec](https://github.com/allenai/objaverse-xl/assets/28768645/2f042d94-090b-4fd0-b37d-23b5971987ed)
 
 ## License
 
@@ -95,3 +85,4 @@ Objaverse 1.0 is available on 🤗Hugging Face at [@allenai/objaverse](https://h
   year={2022}
 }
 ```
+

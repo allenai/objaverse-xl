@@ -1,6 +1,6 @@
 # 🪐 Objaverse-XL Rendering Script
 
-![Blender generated with MidJourney](https://github.com/allenai/objaverse-xl/assets/28768645/69064f78-a752-40d6-bd36-ea7c15ffa1ec)
+![266879371-69064f78-a752-40d6-bd36-ea7c15ffa1ec](https://github.com/allenai/objaverse-xl/assets/28768645/41edb8e3-d2f6-4299-a7f8-418f1ef28029)
 
 Scripts for rendering Objaverse-XL with [Blender](https://www.blender.org/). Rendering is the process of taking pictures of the 3D objects. These images can then be used for training AI models.
 
@@ -74,7 +74,7 @@ we will see that there is a new `0fde27a0-99f0-5029-8e20-be9b8ecabb59` directory
 
 Here, we see that there are 12 renders `[000-011].png`. Each render will look something like one of the 4 images shown below, but likely with the camera at a different location as its location is randomized during rendering:
 
-![temp](https://github.com/allenai/objaverse-xl/assets/28768645/69d79e26-4df1-4bd2-854c-7d3c888adae7)
+![266900773-69d79e26-4df1-4bd2-854c-7d3c888adae7](https://github.com/allenai/objaverse-xl/assets/28768645/440fe28e-4c5a-4460-a4df-6730028c0b22)
 
 Additionally, there are 12 npy files `[000-011].npy`, which include information about the camera's pose for a given render. We can read the npy files using:
 
@@ -136,14 +136,3 @@ Finally, we also have a `metadata.json` file, which contains metadata about the 
 ### 🧑‍🔬️ Experimental Features
 
 USDZ support is experimental. Since Blender does not natively support usdz, we use [this Blender addon](https://github.com/robmcrosby/BlenderUSDZ), but it doesn't work with all types of USDZs. If you have a better solution, PRs are very much welcome 😄!
-
-## 👋 Our Team
-
-Objaverse-XL is an open-source project managed by the [PRIOR team](//prior.allenai.org) at the [Allen Institute for AI](//allenai.org) (AI2).
-AI2 is a non-profit institute with the mission to contribute to humanity through high-impact AI research and engineering.
-
-<br />
-
-<a href="//prior.allenai.org">
-<p align="center"><img width="100%" src="https://raw.githubusercontent.com/allenai/ai2thor/main/doc/static/ai2-prior.svg" /></p>
-</a>
