@@ -17,7 +17,7 @@ import GPUtil
 import pandas as pd
 from loguru import logger
 
-from objaverse_xl.objaverse_xl_downloader import ObjaverseXLDownloader
+from objaverse_xl import ObjaverseDownloader
 from objaverse_xl.utils import get_uid_from_str
 
 
@@ -322,7 +322,7 @@ def handle_missing_object(
     Args:
         file_identifier (str): File identifier of the 3D object.
         sha256 (str): SHA256 of the contents of the original 3D object.
-        metadata (Dict[str, Any]): Metadata about the 3D object, including the GitHub
+        metadata (Dict[str, Any]): Metadata about the 3D object, such as the GitHub
             organization and repo names.
         log_file (str): Name of the log file to save missing renders to.
 
@@ -398,8 +398,8 @@ def render_objects(
         processes = multiprocessing.cpu_count() * 3
 
     objects = get_example_objects()
-    objaverse_xl_downloader = ObjaverseXLDownloader()
-    objaverse_xl_downloader.download_objects(
+    objaverse_dl = ObjaverseDownloader()
+    objaverse_dl.download_objects(
         objects=objects,
         processes=processes,
         save_repo_format=save_repo_format,

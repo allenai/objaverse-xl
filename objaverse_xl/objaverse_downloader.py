@@ -6,12 +6,12 @@ import pandas as pd
 
 from objaverse_xl.abstract import ObjaverseSource
 from objaverse_xl.github import GitHubDownloader
-from objaverse_xl.objaverse_v1 import SketchfabDownloader
+from objaverse_xl.sketchfab import SketchfabDownloader
 from objaverse_xl.smithsonian import SmithsonianDownloader
 from objaverse_xl.thingiverse import ThingiverseDownloader
 
 
-class ObjaverseXLDownloader(ObjaverseSource):
+class ObjaverseDownloader(ObjaverseSource):
     """Downloads 3D objects from all Objaverse-XL sources."""
 
     def __init__(self):
