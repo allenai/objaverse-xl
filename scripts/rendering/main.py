@@ -34,7 +34,7 @@ def log_processed_object(csv_filename: str, *args) -> None:
     args = ",".join([str(arg) for arg in args])
     # log that this object was rendered successfully
     # saving locally to avoid excessive writes to the cloud
-    dirname = os.path.expanduser(f"~/.objaverse/github/logs/")
+    dirname = os.path.expanduser(f"~/.objaverse/logs/")
     os.makedirs(dirname, exist_ok=True)
     with open(os.path.join(dirname, csv_filename), "a", encoding="utf-8") as f:
         f.write(f"{time.time()},{args}\n")
@@ -79,10 +79,10 @@ def handle_found_object(
 
     Args:
         local_path (str): Local path to the downloaded 3D object.
-        file_identifier (str): GitHub URL of the 3D object.
+        file_identifier (str): File identifier of the 3D object.
         sha256 (str): SHA256 of the contents of the 3D object.
-        metadata (Dict[str, Any]): Metadata about the 3D object, including keys for
-            `github_organization` and `github_repo`.
+        metadata (Dict[str, Any]): Metadata about the 3D object, such as the GitHub
+            organization and repo names.
         num_renders (int): Number of renders to save of the object.
         render_dir (str): Directory where the objects will be rendered.
         only_northern_hemisphere (bool): Only render the northern hemisphere of the
@@ -195,10 +195,10 @@ def handle_found_object(
         fs, path = fsspec.core.url_to_fs(render_dir)
 
         # move the zip to the render_dir
-        fs.makedirs(os.path.join(path, "github", "renders"), exist_ok=True)
+        fs.makedirs(os.path.join(path, "renders"), exist_ok=True)
         fs.put(
             os.path.join(f"{target_directory}.zip"),
-            os.path.join(path, "github", "renders", f"{save_uid}.zip"),
+            os.path.join(path, "renders", f"{save_uid}.zip"),
         )
 
         # log that this object was rendered successfully
@@ -224,7 +224,7 @@ def handle_new_object(
 
     Args:
         local_path (str): Local path to the downloaded 3D object.
-        file_identifier (str): GitHub URL of the 3D object.
+        file_identifier (str): The file identifier of the new 3D object.
         sha256 (str): SHA256 of the contents of the 3D object.
         metadata (Dict[str, Any]): Metadata about the 3D object, including the GitHub
             organization and repo names.
@@ -258,11 +258,11 @@ def handle_modified_object(
 
     Args:
         local_path (str): Local path to the downloaded 3D object.
-        file_identifier (str): GitHub URL of the 3D object.
+        file_identifier (str): File identifier of the 3D object.
         new_sha256 (str): SHA256 of the contents of the newly downloaded 3D object.
         old_sha256 (str): Expected SHA256 of the contents of the 3D object as it was
             when it was downloaded with Objaverse-XL.
-        metadata (Dict[str, Any]): Metadata about the 3D object, including the GitHub
+        metadata (Dict[str, Any]): Metadata about the 3D object, such as the GitHub
             organization and repo names.
         num_renders (int): Number of renders to save of the object.
         render_dir (str): Directory where the objects will be rendered.
@@ -309,7 +309,7 @@ def handle_modified_object(
 
 
 def handle_missing_object(
-    github_url: str,
+    file_identifier: str,
     sha256: str,
     metadata: Dict[str, Any],
     log_file: str = "handle-missing-object.csv",
@@ -320,7 +320,7 @@ def handle_missing_object(
     will be done with the missing object.
 
     Args:
-        github_url (str): GitHub URL of the 3D object.
+        file_identifier (str): File identifier of the 3D object.
         sha256 (str): SHA256 of the contents of the original 3D object.
         metadata (Dict[str, Any]): Metadata about the 3D object, including the GitHub
             organization and repo names.
@@ -330,7 +330,7 @@ def handle_missing_object(
         None
     """
     # log the missing object
-    log_processed_object(log_file, github_url, sha256)
+    log_processed_object(log_file, file_identifier, sha256)
 
 
 def get_example_objects() -> pd.DataFrame:
