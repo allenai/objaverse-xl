@@ -46,7 +46,7 @@ class ObjaverseXLDownloader(ObjaverseSource):
     def download_objects(
         self,
         objects: pd.DataFrame,
-        download_dir: str = "~/.objaverse",
+        download_dir: Optional[str] = "~/.objaverse",
         processes: Optional[int] = None,
         handle_found_object: Optional[Callable] = None,
         handle_modified_object: Optional[Callable] = None,
@@ -59,9 +59,9 @@ class ObjaverseXLDownloader(ObjaverseSource):
             objects (pd.DataFrame): Objects to download. Must have columns for
                 the object "fileIdentifier" and "sha256". Use the `get_annotations`
                 function to get the metadata.
-            download_dir (str, optional): Directory to download the objects to.
-                Supports all file systems supported by fsspec. Defaults to
-                "~/.objaverse".
+            download_dir (Optional[str], optional): Directory to download the objects
+                to. Supports all file systems supported by fsspec. If None, the objects
+                will be deleted after they are downloaded. Defaults to "~/.objaverse".
             processes (Optional[int], optional): Number of processes to use for
                 downloading.  If None, will use the number of CPUs on the machine.
                 Defaults to None.

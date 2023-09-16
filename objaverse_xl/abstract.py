@@ -28,7 +28,7 @@ class ObjaverseSource(ABC):
     def download_objects(
         self,
         objects: pd.DataFrame,
-        download_dir: str = "~/.objaverse",
+        download_dir: Optional[str] = "~/.objaverse",
         processes: Optional[int] = None,
         handle_found_object: Optional[Callable] = None,
         handle_modified_object: Optional[Callable] = None,
@@ -44,8 +44,9 @@ class ObjaverseSource(ABC):
             processes (Optional[int], optional): Number of processes to use for
                 downloading.  If None, will use the number of CPUs on the machine.
                 Defaults to None.
-            download_dir (str, optional): Directory to download the objects to.
-                Supports all file systems supported by fsspec. Defaults to
+            download_dir (Optional[str], optional): Directory to download the objects
+                to. Supports all file systems supported by fsspec. If None, the objects
+                will be disregarded after they are downloaded and processed. Defaults to
                 "~/.objaverse".
             save_repo_format (Optional[Literal["zip", "tar", "tar.gz", "files"]],
                 optional): Format to save the repository. If None, the repository will

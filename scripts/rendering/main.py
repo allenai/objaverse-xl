@@ -340,6 +340,7 @@ def get_example_objects() -> pd.DataFrame:
 
 def render_objects(
     render_dir: str = "~/.objaverse",
+    download_dir: Optional[str] = None,
     num_renders: int = 12,
     processes: Optional[int] = None,
     save_repo_format: Optional[Literal["zip", "tar", "tar.gz"]] = None,
@@ -347,25 +348,30 @@ def render_objects(
     render_timeout: int = 300,
     gpu_devices: Optional[Union[int, List[int]]] = None,
 ) -> None:
-    """Renders all GitHub objects in the Objaverse-XL dataset.
+    """Renders objects in the Objaverse-XL dataset with Blender
 
     Args:
-        render_dir (str): Directory where the objects will be rendered.
-        num_renders (int): Number of renders to save of the object.
-        processes (Optional[int]): Number of processes to use for downloading the
-            objects. If None, defaults to multiprocessing.cpu_count() * 3.
-        save_repo_format (Optional[Literal["zip", "tar", "tar.gz"]]): If not None,
-            the GitHub repo will be deleted after rendering each object from it.
-        only_northern_hemisphere (bool): Only render the northern hemisphere of the
-            object. Useful for rendering objects that are obtained from photogrammetry,
-            since the southern hemisphere is often has holes.
-        render_timeout (int): Number of seconds to wait for the rendering job to
-            complete.
-        gpu_devices (Optional[Union[int, List[int]]]): GPU device(s) to use for
-            rendering. If an int, the GPU device will be randomly selected from 0 to
+        render_dir (str, optional): Directory where the objects will be rendered.
+        download_dir (Optional[str], optional): Directory where the objects will be
+            downloaded. If None, the objects will not be downloaded. Defaults to None.
+        num_renders (int, optional): Number of renders to save of the object. Defaults
+            to 12.
+        processes (Optional[int], optional): Number of processes to use for downloading
+            the objects. If None, defaults to multiprocessing.cpu_count() * 3. Defaults
+            to None.
+        save_repo_format (Optional[Literal["zip", "tar", "tar.gz"]], optional): If not
+            None, the GitHub repo will be deleted after rendering each object from it.
+        only_northern_hemisphere (bool, optional): Only render the northern hemisphere
+            of the object. Useful for rendering objects that are obtained from
+            photogrammetry, since the southern hemisphere is often has holes. Defaults
+            to False.
+        render_timeout (int, optional): Number of seconds to wait for the rendering job
+            to complete. Defaults to 300.
+        gpu_devices (Optional[Union[int, List[int]]], optional): GPU device(s) to use
+            for rendering. If an int, the GPU device will be randomly selected from 0 to
             gpu_devices - 1. If a list, the GPU device will be randomly selected from
-            the list. If 0, the CPU will be used for rendering. If None, defaults to
-            use all available GPUs.
+            the list. If 0, the CPU will be used for rendering. If None, all available
+            GPUs will be used. Defaults to None.
 
     Returns:
         None
@@ -373,6 +379,14 @@ def render_objects(
     if platform.system() not in ["Linux", "Darwin"]:
         raise NotImplementedError(
             f"Platform {platform.system()} is not supported. Use Linux or MacOS."
+        )
+    if download_dir is None and save_repo_format is not None:
+        raise ValueError(
+            f"If {save_repo_format=} is not None, {download_dir=} must be specified."
+        )
+    if download_dir is not None and save_repo_format is None:
+        logger.warning(
+            f"GitHub repos will not save. While {download_dir=} is specified, {save_repo_format=} None."
         )
 
     # get the gpu devices to use
@@ -389,7 +403,7 @@ def render_objects(
         objects=objects,
         processes=processes,
         save_repo_format=save_repo_format,
-        download_dir=render_dir,  # only used when save_repo_format is not None
+        download_dir=download_dir,
         handle_found_object=partial(
             handle_found_object,
             render_dir=render_dir,

@@ -252,8 +252,9 @@ class ThingiverseDownloader(ObjaverseSource):
             objects (pd.DataFrame): Thingiverse objects to download. Must have columns
                 for the object "fileIdentifier" and "sha256". Use the `get_annotations`
                 function to get the metadata.
-            download_dir (str, optional): The directory to save the files to. Supports
-                all file systems supported by fsspec. Defaults to "~/.objaverse-xl".
+            download_dir (Optional[str], optional): The directory to save the files to.
+                Supports all file systems supported by fsspec. If None, the objects will
+                be deleted after they are downloaded. Defaults to "~/.objaverse".
             processes (int, optional): The number of processes to use. If None, maps to
                 use all available CPUs using multiprocessing.cpu_count(). Defaults to
                 None.
