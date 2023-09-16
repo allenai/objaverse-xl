@@ -417,8 +417,9 @@ def render_objects(
             handle_modified_object,
             render_dir=render_dir,
             num_renders=num_renders,
-            gpu_devices=parsed_gpu_devices,
             only_northern_hemisphere=only_northern_hemisphere,
+            gpu_devices=parsed_gpu_devices,
+            render_timeout=render_timeout,
         ),
         handle_missing_object=handle_missing_object,
     )
