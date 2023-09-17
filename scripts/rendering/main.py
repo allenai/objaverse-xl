@@ -398,7 +398,32 @@ def render_objects(
     if processes is None:
         processes = multiprocessing.cpu_count() * 3
 
+    # get the objects to render
     objects = get_example_objects()
+    objects.iloc[0]["fileIdentifier"]
+    objects = objects.copy()
+    logger.info(f"Provided {len(objects)} objects to render.")
+
+    # get the already rendered objects
+    fs, path = fsspec.core.url_to_fs(render_dir)
+    try:
+        zip_files = fs.glob(os.path.join(path, "renders", "*.zip"), refresh=True)
+    except TypeError:
+        # s3fs may not support refresh depending on the version
+        zip_files = fs.glob(os.path.join(path, "renders", "*.zip"))
+
+    saved_ids = set(zip_file.split("/")[-1].split(".")[0] for zip_file in zip_files)
+    logger.info(f"Found {len(saved_ids)} objects already rendered.")
+
+    # filter out the already rendered objects
+    objects["saveUid"] = objects["fileIdentifier"].apply(get_uid_from_str)
+    objects = objects[~objects["saveUid"].isin(saved_ids)]
+    objects = objects.reset_index(drop=True)
+    logger.info(f"Rendering {len(objects)} new objects.")
+
+    # shuffle the objects
+    objects = objects.sample(frac=1).reset_index(drop=True)
+
     objaverse_dl = ObjaverseDownloader()
     objaverse_dl.download_objects(
         objects=objects,
