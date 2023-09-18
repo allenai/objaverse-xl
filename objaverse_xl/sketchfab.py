@@ -58,12 +58,12 @@ class SketchfabDownloader(ObjaverseSource):
 
         return annotations_df
 
-    def load_full_annotations(
+    def get_full_annotations(
         self,
         uids: Optional[List[str]] = None,
         download_dir: str = "~/.objaverse",
     ) -> Dict[str, Any]:
-        """Load the full metadata of all objects in the dataset.
+        """Get the full metadata of all objects in the dataset.
 
         Args:
             uids: A list of uids with which to load metadata. If None, it loads
@@ -81,7 +81,7 @@ class SketchfabDownloader(ObjaverseSource):
         fs.makedirs(metadata_path, exist_ok=True)
 
         # get the dir ids that need to be loaded if only downloading a subset of uids
-        object_paths = self._load_object_paths(download_dir=download_dir)
+        object_paths = self._get_object_paths(download_dir=download_dir)
         dir_ids = (
             {object_paths[uid].split("/")[1] for uid in uids}
             if uids is not None
@@ -142,7 +142,7 @@ class SketchfabDownloader(ObjaverseSource):
 
         return out
 
-    def _load_object_paths(self, download_dir: str) -> Dict[str, str]:
+    def _get_object_paths(self, download_dir: str) -> Dict[str, str]:
         """Load the object paths from the dataset.
 
         The object paths specify the location of where the object is located in the
@@ -175,13 +175,13 @@ class SketchfabDownloader(ObjaverseSource):
 
         return object_paths
 
-    def load_uids(self, download_dir: str = "~/.objaverse") -> List[str]:
+    def get_uids(self, download_dir: str = "~/.objaverse") -> List[str]:
         """Load the uids from the dataset.
 
         Returns:
             A list of all the UIDs from the dataset.
         """
-        return list(self._load_object_paths(download_dir=download_dir).keys())
+        return list(self._get_object_paths(download_dir=download_dir).keys())
 
     def _download_object(
         self,
@@ -387,7 +387,7 @@ class SketchfabDownloader(ObjaverseSource):
             A dictionary mapping the object fileIdentifier to the local path of where
             the object downloaded.
         """
-        hf_object_paths = self._load_object_paths(
+        hf_object_paths = self._get_object_paths(
             download_dir=download_dir if download_dir is not None else "~/.objaverse"
         )
         if processes is None:
@@ -498,7 +498,7 @@ class SketchfabDownloader(ObjaverseSource):
 
         return out
 
-    def load_lvis_annotations(
+    def get_lvis_annotations(
         self,
         download_dir: str = "~/.objaverse",
     ) -> Dict[str, List[str]]:
