@@ -182,7 +182,7 @@ def handle_found_object(
         metadata_file["save_uid"] = save_uid
         metadata_file["metadata"] = metadata
         with open(metadata_path, "w", encoding="utf-8") as f:
-            json.dump(metadata, f, indent=2, sort_keys=True)
+            json.dump(metadata_file, f, indent=2, sort_keys=True)
 
         # Make a zip of the target_directory.
         # Keeps the {save_uid} directory structure when unzipped
