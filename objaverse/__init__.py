@@ -11,8 +11,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from tqdm import tqdm
 
-from objaverse.xl.objaverse_downloader import ObjaverseDownloader
-
 BASE_PATH = os.path.join(os.path.expanduser("~"), ".objaverse")
 
 __version__ = "0.1.3"

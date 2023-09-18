@@ -358,6 +358,7 @@ class GitHubDownloader(ObjaverseSource):
 
     @classmethod
     def _get_commit_hash_from_local_git_dir(cls, local_git_dir: str) -> str:
+        """Get the commit hash of the local git directory."""
         # get the git hash of the repo
         result = subprocess.run(
             ["git", "rev-parse", "HEAD"],

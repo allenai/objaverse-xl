@@ -9,9 +9,10 @@ import pandas as pd
 class ObjaverseSource(ABC):
     """Abstract class for Objaverse-XL sources."""
 
+    @classmethod
     @abstractmethod
     def get_annotations(
-        self, download_dir: str = "~/.objaverse", refresh: bool = False
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
         """Loads the 3D object metadata as a Pandas DataFrame.
 
@@ -28,9 +29,10 @@ class ObjaverseSource(ABC):
                 "sha256", and "metadata".
         """
 
+    @classmethod
     @abstractmethod
     def download_objects(
-        self,
+        cls,
         objects: pd.DataFrame,
         download_dir: Optional[str] = "~/.objaverse",
         processes: Optional[int] = None,
