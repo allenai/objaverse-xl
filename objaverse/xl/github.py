@@ -586,8 +586,8 @@ class GitHubDownloader(ObjaverseSource):
                 save_repo_format,
                 objects_per_repo_id_hash[repo_id_hash],
                 handle_found_object,
-                handle_missing_object,
                 handle_modified_object,
+                handle_missing_object,
                 handle_new_object,
             )
             for repo_id_hash in repo_id_hashes_to_download
