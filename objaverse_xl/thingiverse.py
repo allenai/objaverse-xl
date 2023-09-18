@@ -32,7 +32,7 @@ class ThingiverseDownloader(ObjaverseSource):
             pd.DataFrame: The annotations, which includes the columns "thingId", "fileId",
                 "filename", and "license".
         """
-        remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/thingiverse/thingiverse-objects.parquet"
+        remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/thingiverse/thingiverse.parquet"
         download_path = os.path.join(
             download_dir, "thingiverse", "thingiverse-objects.parquet"
         )
@@ -65,7 +65,6 @@ class ThingiverseDownloader(ObjaverseSource):
         Returns:
             Optional[requests.models.Response]: The response from the URL. If there was an error, returns None.
         """
-
         for i in range(max_retries):
             try:
                 response = requests.get(url, stream=True)
@@ -342,7 +341,7 @@ class ThingiverseDownloader(ObjaverseSource):
                 f"Found {already_downloaded_count} Thingiverse objects downloaded"
             )
         else:
-            items_to_download = [item for _, item in objects.iterrows()]
+            items_to_download = list(objects.to_dict(orient="records"))
 
         logger.info(
             f"Downloading {len(items_to_download)} Thingiverse objects with {processes=}"

@@ -34,7 +34,7 @@ class SketchfabDownloader(ObjaverseSource):
             pd.DataFrame: The annotations, which includes the columns "thingId", "fileId",
                 "filename", and "license".
         """
-        remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/objaverse_v1/object-metadata.parquet"
+        remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/sketchfab/sketchfab.parquet"
         download_path = os.path.join(
             download_dir, "hf-objaverse-v1", "thingiverse-objects.parquet"
         )
