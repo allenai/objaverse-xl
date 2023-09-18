@@ -22,8 +22,9 @@ from objaverse.xl.abstract import ObjaverseSource
 class SketchfabDownloader(ObjaverseSource):
     """A class for downloading and processing Objaverse 1.0."""
 
+    @classmethod
     def get_annotations(
-        self, download_dir: str = "~/.objaverse", refresh: bool = False
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
         """Load the annotations from the given directory.
 
@@ -58,8 +59,9 @@ class SketchfabDownloader(ObjaverseSource):
 
         return annotations_df
 
+    @classmethod
     def get_full_annotations(
-        self,
+        cls,
         uids: Optional[List[str]] = None,
         download_dir: str = "~/.objaverse",
     ) -> Dict[str, Any]:
@@ -81,7 +83,7 @@ class SketchfabDownloader(ObjaverseSource):
         fs.makedirs(metadata_path, exist_ok=True)
 
         # get the dir ids that need to be loaded if only downloading a subset of uids
-        object_paths = self._get_object_paths(download_dir=download_dir)
+        object_paths = cls._get_object_paths(download_dir=download_dir)
         dir_ids = (
             {object_paths[uid].split("/")[1] for uid in uids}
             if uids is not None
@@ -142,7 +144,8 @@ class SketchfabDownloader(ObjaverseSource):
 
         return out
 
-    def _get_object_paths(self, download_dir: str) -> Dict[str, str]:
+    @classmethod
+    def _get_object_paths(cls, download_dir: str) -> Dict[str, str]:
         """Load the object paths from the dataset.
 
         The object paths specify the location of where the object is located in the
@@ -175,16 +178,18 @@ class SketchfabDownloader(ObjaverseSource):
 
         return object_paths
 
-    def get_uids(self, download_dir: str = "~/.objaverse") -> List[str]:
+    @classmethod
+    def get_uids(cls, download_dir: str = "~/.objaverse") -> List[str]:
         """Load the uids from the dataset.
 
         Returns:
             A list of all the UIDs from the dataset.
         """
-        return list(self._get_object_paths(download_dir=download_dir).keys())
+        return list(cls._get_object_paths(download_dir=download_dir).keys())
 
+    @classmethod
     def _download_object(
-        self,
+        cls,
         file_identifier: str,
         hf_object_path: str,
         download_dir: Optional[str],
@@ -289,15 +294,18 @@ class SketchfabDownloader(ObjaverseSource):
 
         return file_identifier, path
 
-    def _parallel_download_object(self, args):
+    @classmethod
+    def _parallel_download_object(cls, args):
         # workaround since starmap doesn't work well with tqdm
-        return self._download_object(*args)
+        return cls._download_object(*args)
 
-    def _get_uid(self, item: pd.Series) -> str:
+    @classmethod
+    def _get_uid(cls, item: pd.Series) -> str:
         file_identifier = item["fileIdentifier"]
         return file_identifier.split("/")[-1]
 
-    def uid_to_file_identifier(self, uid: str) -> str:
+    @classmethod
+    def uid_to_file_identifier(cls, uid: str) -> str:
         """Convert the uid to the file identifier.
 
         Args:
@@ -308,7 +316,8 @@ class SketchfabDownloader(ObjaverseSource):
         """
         return f"https://sketchfab.com/3d-models/{uid}"
 
-    def file_identifier_to_uid(self, file_identifier: str) -> str:
+    @classmethod
+    def file_identifier_to_uid(cls, file_identifier: str) -> str:
         """Convert the file identifier to the uid.
 
         Args:
@@ -319,8 +328,9 @@ class SketchfabDownloader(ObjaverseSource):
         """
         return file_identifier.split("/")[-1]
 
+    @classmethod
     def download_objects(
-        self,
+        cls,
         objects: pd.DataFrame,
         download_dir: Optional[str] = "~/.objaverse",
         processes: Optional[int] = None,
@@ -387,7 +397,7 @@ class SketchfabDownloader(ObjaverseSource):
             A dictionary mapping the object fileIdentifier to the local path of where
             the object downloaded.
         """
-        hf_object_paths = self._get_object_paths(
+        hf_object_paths = cls._get_object_paths(
             download_dir=download_dir if download_dir is not None else "~/.objaverse"
         )
         if processes is None:
@@ -395,7 +405,7 @@ class SketchfabDownloader(ObjaverseSource):
 
         # make a copy of the objects so we don't modify the original
         objects = objects.copy()
-        objects["uid"] = objects.apply(self._get_uid, axis=1)
+        objects["uid"] = objects.apply(cls._get_uid, axis=1)
         uids_to_sha256 = dict(zip(objects["uid"], objects["sha256"]))
         uids_set = set(uids_to_sha256.keys())
 
@@ -441,7 +451,7 @@ class SketchfabDownloader(ObjaverseSource):
             for uid in already_downloaded_uids:
                 hf_object_path = hf_object_paths[uid]
                 fs_abs_object_path = os.path.join(versioned_dirname, hf_object_path)
-                out[self.uid_to_file_identifier(uid)] = fs_abs_object_path
+                out[cls.uid_to_file_identifier(uid)] = fs_abs_object_path
 
             logger.info(
                 f"Found {len(already_downloaded_uids)} objects already downloaded"
@@ -488,7 +498,7 @@ class SketchfabDownloader(ObjaverseSource):
         with Pool(processes) as pool:
             new_object_downloads = list(
                 tqdm(
-                    pool.imap_unordered(self._parallel_download_object, args),
+                    pool.imap_unordered(cls._parallel_download_object, args),
                     total=len(args),
                 )
             )
@@ -498,8 +508,9 @@ class SketchfabDownloader(ObjaverseSource):
 
         return out
 
+    @classmethod
     def get_lvis_annotations(
-        self,
+        cls,
         download_dir: str = "~/.objaverse",
     ) -> Dict[str, List[str]]:
         """Load the LVIS annotations.

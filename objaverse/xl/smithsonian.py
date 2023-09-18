@@ -19,8 +19,9 @@ from objaverse.xl.abstract import ObjaverseSource
 class SmithsonianDownloader(ObjaverseSource):
     """Script to download objects from the Smithsonian Institute."""
 
+    @classmethod
     def get_annotations(
-        self, download_dir: str = "~/.objaverse", refresh: bool = False
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
         """Loads the Smithsonian Object Metadata dataset as a Pandas DataFrame.
 
@@ -55,8 +56,9 @@ class SmithsonianDownloader(ObjaverseSource):
 
         return df
 
+    @classmethod
     def _download_smithsonian_object(
-        self,
+        cls,
         file_identifier: str,
         download_dir: Optional[str],
         expected_sha256: str,
@@ -112,7 +114,6 @@ class SmithsonianDownloader(ObjaverseSource):
                 - metadata (Dict[str, Any]): Metadata about the 3D object, including the
                     GitHub organization and repo names.
                 Return is not used.
-
 
         Returns:
             Tuple[str, Optional[str]]: Tuple of the URL and the path to the downloaded
@@ -178,12 +179,14 @@ class SmithsonianDownloader(ObjaverseSource):
 
         return file_identifier, path
 
-    def _parallel_download_object(self, args):
+    @classmethod
+    def _parallel_download_object(cls, args):
         # workaround since starmap doesn't work well with tqdm
-        return self._download_smithsonian_object(*args)
+        return cls._download_smithsonian_object(*args)
 
+    @classmethod
     def download_objects(
-        self,
+        cls,
         objects: pd.DataFrame,
         download_dir: Optional[str] = "~/.objaverse",
         processes: Optional[int] = None,
@@ -309,7 +312,7 @@ class SmithsonianDownloader(ObjaverseSource):
         with Pool(processes=processes) as pool:
             results = list(
                 tqdm(
-                    pool.imap_unordered(self._parallel_download_object, args),
+                    pool.imap_unordered(cls._parallel_download_object, args),
                     total=len(objects_to_download),
                     desc="Downloading Smithsonian Objects",
                 )

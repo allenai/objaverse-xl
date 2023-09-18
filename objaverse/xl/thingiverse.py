@@ -20,8 +20,9 @@ from objaverse.xl.abstract import ObjaverseSource
 class ThingiverseDownloader(ObjaverseSource):
     """Script to download objects from Thingiverse."""
 
+    @classmethod
     def get_annotations(
-        self, download_dir: str = "~/.objaverse", refresh: bool = False
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
         """Load the annotations from the given directory.
 
@@ -54,8 +55,9 @@ class ThingiverseDownloader(ObjaverseSource):
 
         return annotations_df
 
+    @classmethod
     def _get_response_with_retries(
-        self, url: str, max_retries: int = 3, retry_delay: int = 5
+        cls, url: str, max_retries: int = 3, retry_delay: int = 5
     ) -> Optional[requests.models.Response]:
         """Get a response from a URL with retries.
 
@@ -83,8 +85,9 @@ class ThingiverseDownloader(ObjaverseSource):
 
         return response
 
+    @classmethod
     def _download_item(
-        self,
+        cls,
         thingi_file_id: str,
         thingi_thing_id: str,
         file_identifier: str,
@@ -149,7 +152,7 @@ class ThingiverseDownloader(ObjaverseSource):
                 returns None.
         """
         url = f"https://www.thingiverse.com/download:{thingi_file_id}"
-        response = self._get_response_with_retries(url)
+        response = cls._get_response_with_retries(url)
         filename = f"thing-{thingi_thing_id}-file-{thingi_file_id}.stl"
 
         if response is None:
@@ -212,10 +215,12 @@ class ThingiverseDownloader(ObjaverseSource):
 
         return file_identifier, path
 
-    def _parallel_download_item(self, args):
-        return self._download_item(*args)
+    @classmethod
+    def _parallel_download_item(cls, args):
+        return cls._download_item(*args)
 
-    def get_file_id_from_file_identifier(self, file_identifier: str) -> str:
+    @classmethod
+    def get_file_id_from_file_identifier(cls, file_identifier: str) -> str:
         """Get the thingiverse file ID from the Objaverse-XL file identifier.
 
         Args:
@@ -226,7 +231,8 @@ class ThingiverseDownloader(ObjaverseSource):
         """
         return file_identifier.split("fileId=")[-1]
 
-    def get_thing_id_from_file_identifier(self, file_identifier: str) -> str:
+    @classmethod
+    def get_thing_id_from_file_identifier(cls, file_identifier: str) -> str:
         """Get the thingiverse thing ID from the Objaverse-XL file identifier.
 
         Args:
@@ -237,8 +243,9 @@ class ThingiverseDownloader(ObjaverseSource):
         """
         return file_identifier.split("/")[-2].split(":")[1]
 
+    @classmethod
     def download_objects(
-        self,
+        cls,
         objects: pd.DataFrame,
         download_dir: Optional[str] = "~/.objaverse",
         processes: Optional[int] = None,
@@ -306,10 +313,10 @@ class ThingiverseDownloader(ObjaverseSource):
 
         objects = objects.copy()
         objects["thingiFileId"] = objects["fileIdentifier"].apply(
-            self.get_file_id_from_file_identifier
+            cls.get_file_id_from_file_identifier
         )
         objects["thingiThingId"] = objects["fileIdentifier"].apply(
-            self.get_thing_id_from_file_identifier
+            cls.get_thing_id_from_file_identifier
         )
 
         # create the download directory
@@ -369,7 +376,7 @@ class ThingiverseDownloader(ObjaverseSource):
         with Pool(processes=processes) as pool:
             results = list(
                 tqdm(
-                    pool.imap_unordered(self._parallel_download_item, args),
+                    pool.imap_unordered(cls._parallel_download_item, args),
                     total=len(args),
                     desc="Downloading Thingiverse Objects",
                 )

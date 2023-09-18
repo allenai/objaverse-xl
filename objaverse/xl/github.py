@@ -38,8 +38,9 @@ FILE_EXTENSIONS = [
 class GitHubDownloader(ObjaverseSource):
     """Script to download objects from GitHub."""
 
+    @classmethod
     def get_annotations(
-        self, download_dir: str = "~/.objaverse", refresh: bool = False
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
         """Loads the GitHub 3D object metadata as a Pandas DataFrame.
 
@@ -74,12 +75,14 @@ class GitHubDownloader(ObjaverseSource):
 
         return df
 
-    def _get_repo_id_with_hash(self, item: pd.Series) -> str:
+    @classmethod
+    def _get_repo_id_with_hash(cls, item: pd.Series) -> str:
         org, repo = item["fileIdentifier"].split("/")[3:5]
         commit_hash = item["fileIdentifier"].split("/")[6]
         return f"{org}/{repo}/{commit_hash}"
 
-    def _git_shallow_clone(self, repo_url: str, target_directory: str) -> bool:
+    @classmethod
+    def _git_shallow_clone(cls, repo_url: str, target_directory: str) -> bool:
         """Helper function to shallow clone a repo with git.
 
         Args:
@@ -89,12 +92,13 @@ class GitHubDownloader(ObjaverseSource):
         Returns:
             bool: True if the clone was successful, False otherwise.
         """
-        return self._run_command_with_check(
+        return cls._run_command_with_check(
             ["git", "clone", "--depth", "1", repo_url, target_directory],
         )
 
+    @classmethod
     def _run_command_with_check(
-        self, command: List[str], cwd: Optional[str] = None
+        cls, command: List[str], cwd: Optional[str] = None
     ) -> bool:
         """Helper function to run a command and check if it was successful.
 
@@ -121,8 +125,9 @@ class GitHubDownloader(ObjaverseSource):
             logger.error(e.stderr)
             return False
 
+    @classmethod
     def _process_repo(
-        self,
+        cls,
         repo_id: str,
         fs: fsspec.AbstractFileSystem,
         base_dir: str,
@@ -156,7 +161,7 @@ class GitHubDownloader(ObjaverseSource):
         with tempfile.TemporaryDirectory() as temp_dir:
             # clone the repo to a temp directory
             target_directory = os.path.join(temp_dir, repo)
-            successful_clone = self._git_shallow_clone(
+            successful_clone = cls._git_shallow_clone(
                 f"https://github.com/{org}/{repo}.git", target_directory
             )
             if not successful_clone:
@@ -171,14 +176,12 @@ class GitHubDownloader(ObjaverseSource):
                 return {}
 
             # use the commit hash if specified
-            repo_commit_hash = self._get_commit_hash_from_local_git_dir(
-                target_directory
-            )
+            repo_commit_hash = cls._get_commit_hash_from_local_git_dir(target_directory)
             if commit_hash is not None:
                 keep_going = True
                 if repo_commit_hash != commit_hash:
                     # run git reset --hard && git checkout 37f4d8d287e201ce52c048bf74d46d6a09d26b2c
-                    if not self._run_command_with_check(
+                    if not cls._run_command_with_check(
                         ["git", "fetch", "origin", commit_hash], target_directory
                     ):
                         logger.error(
@@ -186,7 +189,7 @@ class GitHubDownloader(ObjaverseSource):
                         )
                         keep_going = False
 
-                    if keep_going and not self._run_command_with_check(
+                    if keep_going and not cls._run_command_with_check(
                         ["git", "reset", "--hard"], target_directory
                     ):
                         logger.error(
@@ -195,7 +198,7 @@ class GitHubDownloader(ObjaverseSource):
                         keep_going = False
 
                     if keep_going:
-                        if self._run_command_with_check(
+                        if cls._run_command_with_check(
                             ["git", "checkout", commit_hash], target_directory
                         ):
                             repo_commit_hash = commit_hash
@@ -205,10 +208,10 @@ class GitHubDownloader(ObjaverseSource):
                             )
 
             # pull the lfs files
-            self._pull_lfs_files(target_directory)
+            cls._pull_lfs_files(target_directory)
 
             # get all the files in the repo
-            files = self._list_files(target_directory)
+            files = cls._list_files(target_directory)
             files_with_3d_extension = [
                 file
                 for file in files
@@ -329,18 +332,21 @@ class GitHubDownloader(ObjaverseSource):
 
         return out
 
-    def _list_files(self, root_dir: str) -> List[str]:
+    @classmethod
+    def _list_files(cls, root_dir: str) -> List[str]:
         return [
             os.path.join(root, f)
             for root, dirs, files in os.walk(root_dir)
             for f in files
         ]
 
-    def _pull_lfs_files(self, repo_dir: str) -> None:
-        if self._has_lfs_files(repo_dir):
+    @classmethod
+    def _pull_lfs_files(cls, repo_dir: str) -> None:
+        if cls._has_lfs_files(repo_dir):
             subprocess.run(["git", "lfs", "pull"], cwd=repo_dir, check=True)
 
-    def _has_lfs_files(self, repo_dir: str) -> bool:
+    @classmethod
+    def _has_lfs_files(cls, repo_dir: str) -> bool:
         gitattributes_path = os.path.join(repo_dir, ".gitattributes")
         if not os.path.exists(gitattributes_path):
             return False
@@ -350,7 +356,8 @@ class GitHubDownloader(ObjaverseSource):
                     return True
         return False
 
-    def _get_commit_hash_from_local_git_dir(self, local_git_dir: str) -> str:
+    @classmethod
+    def _get_commit_hash_from_local_git_dir(cls, local_git_dir: str) -> str:
         # get the git hash of the repo
         result = subprocess.run(
             ["git", "rev-parse", "HEAD"],
@@ -361,7 +368,8 @@ class GitHubDownloader(ObjaverseSource):
         commit_hash = result.stdout.strip().decode("utf-8")
         return commit_hash
 
-    def _parallel_process_repo(self, args) -> Dict[str, str]:
+    @classmethod
+    def _parallel_process_repo(cls, args) -> Dict[str, str]:
         """Helper function to process a repo in parallel.
 
         Note: This function is used to parallelize the processing of repos. It is not
@@ -388,7 +396,7 @@ class GitHubDownloader(ObjaverseSource):
         ) = args
         repo_id = "/".join(repo_id_hash.split("/")[:2])
         commit_hash = repo_id_hash.split("/")[2]
-        return self._process_repo(
+        return cls._process_repo(
             repo_id=repo_id,
             fs=fs,
             base_dir=base_dir,
@@ -401,12 +409,14 @@ class GitHubDownloader(ObjaverseSource):
             commit_hash=commit_hash,
         )
 
-    def _process_group(self, group):
+    @classmethod
+    def _process_group(cls, group):
         key, group_df = group
         return key, group_df.set_index("fileIdentifier")["sha256"].to_dict()
 
+    @classmethod
     def download_objects(
-        self,
+        cls,
         objects: pd.DataFrame,
         download_dir: Optional[str] = "~/.objaverse",
         processes: Optional[int] = None,
@@ -529,7 +539,7 @@ class GitHubDownloader(ObjaverseSource):
         objects = objects.copy()
 
         # get the unique repoIds
-        objects["repoIdHash"] = objects.apply(self._get_repo_id_with_hash, axis=1)
+        objects["repoIdHash"] = objects.apply(cls._get_repo_id_with_hash, axis=1)
         repo_id_hashes = set(objects["repoIdHash"].unique().tolist())
         repo_ids = {
             "/".join(repo_id_hash.split("/")[:2]) for repo_id_hash in repo_id_hashes
@@ -560,7 +570,7 @@ class GitHubDownloader(ObjaverseSource):
         with Pool(processes=processes) as pool:
             out_list = list(
                 tqdm(
-                    pool.imap_unordered(self._process_group, groups),
+                    pool.imap_unordered(cls._process_group, groups),
                     total=len(groups),
                     desc="Grouping objects by repository",
                 )
@@ -586,7 +596,7 @@ class GitHubDownloader(ObjaverseSource):
             # use tqdm to show progress
             out = list(
                 tqdm(
-                    pool.imap_unordered(self._parallel_process_repo, all_args),
+                    pool.imap_unordered(cls._parallel_process_repo, all_args),
                     total=len(all_args),
                     desc="Downloading repositories",
                 )
