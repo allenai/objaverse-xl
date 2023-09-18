@@ -54,8 +54,8 @@ def download_objects(
 
     Args:
         objects (pd.DataFrame): Objects to download. Must have columns for
-            the object "fileIdentifier" and "sha256". Use the `get_annotations`
-            function to get the metadata.
+            the object "fileIdentifier", "source", and "sha256". Use the
+            `get_annotations` function to get all objects as a DataFrame.
         download_dir (Optional[str], optional): Directory to download the objects
             to. Supports all file systems supported by fsspec. If None, the objects
             will be deleted after they are downloaded. Defaults to "~/.objaverse".
