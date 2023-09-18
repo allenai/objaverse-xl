@@ -35,9 +35,7 @@ class SketchfabDownloader(ObjaverseSource):
                 "filename", and "license".
         """
         remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/sketchfab/sketchfab.parquet"
-        download_path = os.path.join(
-            download_dir, "hf-objaverse-v1", "thingiverse-objects.parquet"
-        )
+        download_path = os.path.join(download_dir, "sketchfab", "sketchfab.parquet")
         fs, path = fsspec.core.url_to_fs(download_path)
 
         if not fs.exists(path):

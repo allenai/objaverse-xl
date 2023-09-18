@@ -33,9 +33,7 @@ class ThingiverseDownloader(ObjaverseSource):
                 "filename", and "license".
         """
         remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/thingiverse/thingiverse.parquet"
-        download_path = os.path.join(
-            download_dir, "thingiverse", "thingiverse-objects.parquet"
-        )
+        download_path = os.path.join(download_dir, "thingiverse", "thingiverse.parquet")
         fs, path = fsspec.core.url_to_fs(download_path)
 
         if not fs.exists(path):

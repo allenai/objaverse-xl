@@ -31,13 +31,14 @@ class SmithsonianDownloader(ObjaverseSource):
                 columns for the object "title", "url", "quality", "file_type", "uid", and
                 "license". The quality is always Medium and the file_type is always glb.
         """
-        filename = os.path.join(download_dir, "smithsonian", "object-metadata.parquet")
+        filename = os.path.join(download_dir, "smithsonian", "smithsonian.parquet")
         fs, path = fsspec.core.url_to_fs(filename)
         fs.makedirs(os.path.dirname(path), exist_ok=True)
 
         # download the parquet file if it doesn't exist
         if not fs.exists(path):
             url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/smithsonian/smithsonian.parquet"
+            logger.info(f"Downloading {url} to {filename}")
             response = requests.get(url)
             response.raise_for_status()
             with fs.open(path, "wb") as file:

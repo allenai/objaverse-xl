@@ -51,14 +51,14 @@ class GitHubDownloader(ObjaverseSource):
                 for the object "fileIdentifier", "license", "source", "fileType",
                 "sha256", and "metadata".
         """
-        filename = os.path.join(download_dir, "github", "github-urls.parquet")
+        filename = os.path.join(download_dir, "github", "github.parquet")
         fs, path = fsspec.core.url_to_fs(filename)
         fs.makedirs(os.path.dirname(path), exist_ok=True)
 
         # download the parquet file if it doesn't exist
         if not fs.exists(path):
             url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/github/github.parquet"
-
+            logger.info(f"Downloading {url} to {filename}")
             response = requests.get(url)
             response.raise_for_status()
             with fs.open(path, "wb") as file:
