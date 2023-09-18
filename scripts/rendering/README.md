@@ -144,6 +144,8 @@ Inside of `main.py` there is a `render_objects` function that provides various p
 - `render_timeout: int = 300`: Maximum number of seconds to await completion of the rendering job. Default is `300` seconds.
 - `gpu_devices: Optional[Union[int, List[int]]] = None`: Specifies GPU device(s) for rendering. If an `int`, the GPU device is randomly chosen from `0` to `gpu_devices - 1`. If a `List[int]`, a GPU device is randomly chosen from the list. If `0`, the CPU is used. If `None` (default), all available GPUs are utilized.
 
+To tweak the objects that you want to render, go into `main.py` and update the `get_example_objects` function.
+
 #### Example
 
 To render objects using a custom configuration:
