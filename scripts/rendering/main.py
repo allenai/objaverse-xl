@@ -17,8 +17,8 @@ import GPUtil
 import pandas as pd
 from loguru import logger
 
-from objaverse_xl import ObjaverseDownloader
-from objaverse_xl.utils import get_uid_from_str
+from objaverse import ObjaverseDownloader
+from objaverse.utils import get_uid_from_str
 
 
 def log_processed_object(csv_filename: str, *args) -> None:

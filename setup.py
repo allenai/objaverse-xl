@@ -9,11 +9,11 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
     requirements = [line.strip() for line in f.readlines()]
 
 setup(
-    name="objaverse_xl",
+    name="objaverse",
     version="0.1.3",
     author="Allen Institute for AI",
     author_email="mattd@allenai.org",
-    description="Objaverse-XL is an open dataset of over 10 million 3D objects",
+    description="Objaverse is an open dataset with over 10 million 3D objects",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://huggingface.co/datasets/allenai/objaverse-xl",

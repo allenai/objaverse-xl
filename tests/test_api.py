@@ -4,10 +4,10 @@ import shutil
 import fsspec
 import pandas as pd
 
-from objaverse_xl.github import GitHubDownloader
-from objaverse_xl.sketchfab import SketchfabDownloader
-from objaverse_xl.thingiverse import ThingiverseDownloader
-from objaverse_xl.smithsonian import SmithsonianDownloader
+from objaverse.xl.github import GitHubDownloader
+from objaverse.xl.sketchfab import SketchfabDownloader
+from objaverse.xl.thingiverse import ThingiverseDownloader
+from objaverse.xl.smithsonian import SmithsonianDownloader
 
 
 def test_github_process_repo():

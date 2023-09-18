@@ -1,8 +1,9 @@
-"""Script to download 3D objects from the Smithsonian Institution."""
+"""Script to download objects from Thingiverse."""
 
 import multiprocessing
 import os
 import tempfile
+import time
 from multiprocessing import Pool
 from typing import Callable, Dict, Optional, Tuple
 
@@ -12,51 +13,80 @@ import requests
 from loguru import logger
 from tqdm import tqdm
 
-from objaverse_xl.abstract import ObjaverseSource
-from objaverse_xl.utils import get_file_hash, get_uid_from_str
+from objaverse.utils import get_file_hash
+from objaverse.xl.abstract import ObjaverseSource
 
 
-class SmithsonianDownloader(ObjaverseSource):
-    """Script to download objects from the Smithsonian Institute."""
+class ThingiverseDownloader(ObjaverseSource):
+    """Script to download objects from Thingiverse."""
 
     def get_annotations(
         self, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
-        """Loads the Smithsonian Object Metadata dataset as a Pandas DataFrame.
+        """Load the annotations from the given directory.
 
         Args:
-            download_dir (str, optional): Directory to download the parquet metadata
-                file. Supports all file systems supported by fsspec. Defaults to
+            download_dir (str, optional): The directory to load the annotations from.
+                Supports all file systems supported by fsspec. Defaults to
                 "~/.objaverse".
             refresh (bool, optional): Whether to refresh the annotations by downloading
                 them from the remote source. Defaults to False.
 
         Returns:
-            pd.DataFrame: Smithsonian Object Metadata dataset as a Pandas DataFrame with
-                columns for the object "title", "url", "quality", "file_type", "uid", and
-                "license". The quality is always Medium and the file_type is always glb.
+            pd.DataFrame: The annotations, which includes the columns "thingId", "fileId",
+                "filename", and "license".
         """
-        filename = os.path.join(download_dir, "smithsonian", "smithsonian.parquet")
-        fs, path = fsspec.core.url_to_fs(filename)
-        fs.makedirs(os.path.dirname(path), exist_ok=True)
+        remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/thingiverse/thingiverse.parquet"
+        download_path = os.path.join(download_dir, "thingiverse", "thingiverse.parquet")
+        fs, path = fsspec.core.url_to_fs(download_path)
 
-        # download the parquet file if it doesn't exist
         if refresh or not fs.exists(path):
-            url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/smithsonian/smithsonian.parquet"
-            logger.info(f"Downloading {url} to {filename}")
-            response = requests.get(url)
+            fs.makedirs(os.path.dirname(path), exist_ok=True)
+            logger.info(f"Downloading {remote_url} to {download_path}")
+            response = requests.get(remote_url)
             response.raise_for_status()
             with fs.open(path, "wb") as file:
                 file.write(response.content)
 
-        # load the parquet file with fsspec
-        with fs.open(path) as f:
-            df = pd.read_parquet(f)
+        # read the file with pandas and fsspec
+        with fs.open(download_path, "rb") as f:
+            annotations_df = pd.read_parquet(f)
 
-        return df
+        return annotations_df
 
-    def _download_smithsonian_object(
+    def _get_response_with_retries(
+        self, url: str, max_retries: int = 3, retry_delay: int = 5
+    ) -> Optional[requests.models.Response]:
+        """Get a response from a URL with retries.
+
+        Args:
+            url (str): The URL to get a response from.
+            max_retries (int, optional): The maximum number of retries. Defaults to 3.
+            retry_delay (int, optional): The delay between retries in seconds. Defaults to 5.
+
+        Returns:
+            Optional[requests.models.Response]: The response from the URL. If there was an error, returns None.
+        """
+        for i in range(max_retries):
+            try:
+                response = requests.get(url, stream=True)
+                # if successful, break out of loop
+                if response.status_code not in {200, 404}:
+                    time.sleep(retry_delay)
+                    continue
+                break
+            except ConnectionError:
+                if i < max_retries - 1:  # i.e. not on the last try
+                    time.sleep(retry_delay)
+        else:
+            return None
+
+        return response
+
+    def _download_item(
         self,
+        thingi_file_id: str,
+        thingi_thing_id: str,
         file_identifier: str,
         download_dir: Optional[str],
         expected_sha256: str,
@@ -64,12 +94,12 @@ class SmithsonianDownloader(ObjaverseSource):
         handle_modified_object: Optional[Callable],
         handle_missing_object: Optional[Callable],
     ) -> Tuple[str, Optional[str]]:
-        """Downloads a Smithsonian Object from a URL.
-
-        Overwrites the file if it already exists and assumes this was previous checked.
+        """Download the given item.
 
         Args:
-            file_identifier (str): URL to download the Smithsonian Object from.
+            thingi_file_id (str): The Thingiverse file ID of the object.
+            thingi_thing_id (str): The Thingiverse thing ID of the object.
+            file_identifier (str): File identifier of the Thingiverse object.
             download_dir (Optional[str]): Directory to download the Smithsonian Object
                 to. Supports all file systems supported by fsspec. If None, the
                 Smithsonian Object will be deleted after it is downloaded and processed
@@ -115,28 +145,34 @@ class SmithsonianDownloader(ObjaverseSource):
 
 
         Returns:
-            Tuple[str, Optional[str]]: Tuple of the URL and the path to the downloaded
-                Smithsonian Object. If the Smithsonian Object was not downloaded, the path
-                will be None.
+            Optional[str]: The path to the downloaded file. If there was an error or 404,
+                returns None.
         """
-        uid = get_uid_from_str(file_identifier)
+        url = f"https://www.thingiverse.com/download:{thingi_file_id}"
+        response = self._get_response_with_retries(url)
+        filename = f"thing-{thingi_thing_id}-file-{thingi_file_id}.stl"
+
+        if response is None:
+            logger.warning(
+                f"Thingiverse file ID {thingi_file_id} could not get response from {url}"
+            )
+            # NOTE: the object is probably not missing, but the request failed
+            return file_identifier, None
+
+        # Check if the request was successful
+        if response.status_code == 404:
+            logger.warning(
+                f"Thingiverse file ID {thingi_file_id} (404) could not find file"
+            )
+            if handle_missing_object is not None:
+                handle_missing_object(
+                    file_identifier=file_identifier, sha256=expected_sha256, metadata={}
+                )
+            return file_identifier, None
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = os.path.join(temp_dir, f"{uid}.glb")
-            temp_path_tmp = f"{temp_path}.tmp"
-
-            response = requests.get(file_identifier)
-
-            # check if the path is valid
-            if response.status_code == 404:
-                logger.warning(f"404 for {file_identifier}")
-                if handle_missing_object is not None:
-                    handle_missing_object(
-                        file_identifier=file_identifier,
-                        sha256=expected_sha256,
-                        metadata={},
-                    )
-                return file_identifier, None
+            temp_path = os.path.join(temp_dir, filename)
+            temp_path_tmp = temp_path + ".tmp"
 
             with open(temp_path_tmp, "wb") as file:
                 for chunk in response.iter_content(chunk_size=8192):
@@ -167,9 +203,7 @@ class SmithsonianDownloader(ObjaverseSource):
                     )
 
             if download_dir is not None:
-                filename = os.path.join(
-                    download_dir, "smithsonian", "objects", f"{uid}.glb"
-                )
+                filename = os.path.join(download_dir, filename)
                 fs, path = fsspec.core.url_to_fs(filename)
                 fs.makedirs(os.path.dirname(path), exist_ok=True)
                 fs.put(temp_path, path)
@@ -178,9 +212,30 @@ class SmithsonianDownloader(ObjaverseSource):
 
         return file_identifier, path
 
-    def _parallel_download_object(self, args):
-        # workaround since starmap doesn't work well with tqdm
-        return self._download_smithsonian_object(*args)
+    def _parallel_download_item(self, args):
+        return self._download_item(*args)
+
+    def get_file_id_from_file_identifier(self, file_identifier: str) -> str:
+        """Get the thingiverse file ID from the Objaverse-XL file identifier.
+
+        Args:
+            file_identifier (str): The Objaverse-XL file identifier.
+
+        Returns:
+            str: The Thingiverse file ID.
+        """
+        return file_identifier.split("fileId=")[-1]
+
+    def get_thing_id_from_file_identifier(self, file_identifier: str) -> str:
+        """Get the thingiverse thing ID from the Objaverse-XL file identifier.
+
+        Args:
+            file_identifier (str): The Objaverse-XL file identifier.
+
+        Returns:
+            str: The Thingiverse thing ID.
+        """
+        return file_identifier.split("/")[-2].split(":")[1]
 
     def download_objects(
         self,
@@ -192,21 +247,18 @@ class SmithsonianDownloader(ObjaverseSource):
         handle_missing_object: Optional[Callable] = None,
         **kwargs,
     ) -> Dict[str, str]:
-        """Downloads all Smithsonian Objects.
+        """Download the objects from the given list of things and files.
 
         Args:
-            objects (pd.DataFrmae): Objects to download. Must have columns for
-                the object "fileIdentifier" and "sha256". Use the `get_annotations`
+            objects (pd.DataFrame): Thingiverse objects to download. Must have columns
+                for the object "fileIdentifier" and "sha256". Use the `get_annotations`
                 function to get the metadata.
-            download_dir (Optional[str], optional): Directory to download the
-                Smithsonian Objects to. Supports all file systems supported by fsspec.
-                If None, the Smithsonian Objects will be deleted after they are
-                downloaded and processed with the handler functions. Defaults to
-                "~/.objaverse".
-            processes (Optional[int], optional): Number of processes to use for
-                downloading the Smithsonian Objects. If None, the number of processes
-                will be set to the number of CPUs on the machine
-                (multiprocessing.cpu_count()). Defaults to None.
+            download_dir (Optional[str], optional): The directory to save the files to.
+                Supports all file systems supported by fsspec. If None, the objects will
+                be deleted after they are downloaded. Defaults to "~/.objaverse".
+            processes (int, optional): The number of processes to use. If None, maps to
+                use all available CPUs using multiprocessing.cpu_count(). Defaults to
+                None.
             handle_found_object (Optional[Callable], optional): Called when an object is
                 successfully found and downloaded. Here, the object has the same sha256
                 as the one that was downloaded with Objaverse-XL. If None, the object
@@ -246,72 +298,80 @@ class SmithsonianDownloader(ObjaverseSource):
                 Return is not used. Defaults to None.
 
         Returns:
-            Dict[str, str]: A dictionary mapping from the fileIdentifier to the
-                download_path.
+            Dict[str, str]: A dictionary mapping from the fileIdentifier to the path of
+                the downloaded file.
         """
         if processes is None:
             processes = multiprocessing.cpu_count()
 
+        objects = objects.copy()
+        objects["thingiFileId"] = objects["fileIdentifier"].apply(
+            self.get_file_id_from_file_identifier
+        )
+        objects["thingiThingId"] = objects["fileIdentifier"].apply(
+            self.get_thing_id_from_file_identifier
+        )
+
+        # create the download directory
         out = {}
-        objects_to_download = []
         if download_dir is not None:
-            objects_dir = os.path.join(download_dir, "smithsonian", "objects")
-            fs, path = fsspec.core.url_to_fs(objects_dir)
+            download_dir = os.path.join(download_dir, "thingiverse")
+            fs, path = fsspec.core.url_to_fs(download_dir)
             fs.makedirs(path, exist_ok=True)
 
-            # get the existing glb files
-            existing_glb_files = fs.glob(
-                os.path.join(objects_dir, "*.glb"), refresh=True
-            )
-            existing_uids = set(
-                os.path.basename(file).split(".")[0] for file in existing_glb_files
-            )
+            # check to filter out files that already exist
+            existing_files = fs.glob(os.path.join(download_dir, "*.stl"), refresh=True)
+            existing_file_ids = {
+                os.path.basename(file).split(".")[0].split("-")[-1]
+                for file in existing_files
+            }
 
-            # find the urls that need to be downloaded
-            already_downloaded_objects = set()
+            # filter out existing files
+            items_to_download = []
+            already_downloaded_count = 0
             for _, item in objects.iterrows():
-                file_identifier = item["fileIdentifier"]
-                uid = get_uid_from_str(file_identifier)
-                if uid not in existing_uids:
-                    objects_to_download.append(item)
+                if item["thingiFileId"] in existing_file_ids:
+                    already_downloaded_count += 1
+                    out[item["fileIdentifier"]] = os.path.join(
+                        os.path.expanduser(download_dir),
+                        f"thing-{item['thingiThingId']}-file-{item['thingiFileId']}.stl",
+                    )
                 else:
-                    already_downloaded_objects.add(file_identifier)
-                out[file_identifier] = os.path.join(
-                    os.path.expanduser(objects_dir), f"{uid}.glb"
-                )
+                    items_to_download.append(item)
+
+            logger.info(
+                f"Found {already_downloaded_count} Thingiverse objects downloaded"
+            )
         else:
-            existing_uids = set()
-            objects_to_download = [item for _, item in objects.iterrows()]
-            already_downloaded_objects = set()
-            out = {}
+            items_to_download = list(objects.to_dict(orient="records"))
 
         logger.info(
-            f"Found {len(already_downloaded_objects)} Smithsonian Objects already downloaded"
+            f"Downloading {len(items_to_download)} Thingiverse objects with {processes=}"
         )
-        logger.info(
-            f"Downloading {len(objects_to_download)} Smithsonian Objects with {processes} processes"
-        )
-
-        if len(objects_to_download) == 0:
+        if len(items_to_download) == 0:
             return out
 
+        # download the files
         args = [
-            [
+            (
+                item["thingiFileId"],
+                item["thingiThingId"],
                 item["fileIdentifier"],
                 download_dir,
                 item["sha256"],
                 handle_found_object,
                 handle_modified_object,
                 handle_missing_object,
-            ]
-            for item in objects_to_download
+            )
+            for item in items_to_download
         ]
+
         with Pool(processes=processes) as pool:
             results = list(
                 tqdm(
-                    pool.imap_unordered(self._parallel_download_object, args),
-                    total=len(objects_to_download),
-                    desc="Downloading Smithsonian Objects",
+                    pool.imap_unordered(self._parallel_download_item, args),
+                    total=len(args),
+                    desc="Downloading Thingiverse Objects",
                 )
             )
 

@@ -15,8 +15,8 @@ import requests
 from loguru import logger
 from tqdm import tqdm
 
-from objaverse_xl.abstract import ObjaverseSource
-from objaverse_xl.utils import get_file_hash
+from objaverse.utils import get_file_hash
+from objaverse.xl.abstract import ObjaverseSource
 
 
 class SketchfabDownloader(ObjaverseSource):

@@ -6,16 +6,16 @@ install-dev: ## [Local development] Install test requirements
 	python -m pip install -r requirements-test.txt
 
 lint: ## [Local development] Run mypy, pylint and black
-	python -m mypy objaverse_xl
-	python -m pylint objaverse_xl
-	python -m black --check objaverse_xl
-	python -m isort --check-only objaverse_xl
+	python -m mypy objaverse
+	python -m pylint objaverse
+	python -m black --check objaverse
+	python -m isort --check-only objaverse
 	python -m black --check scripts --exclude scripts/rendering/blender-3.2.2-linux-x64/
 	python -m isort --check-only scripts/**/*.py --skip scripts/rendering/blender-3.2.2-linux-x64/
 
 format: ## [Local development] Auto-format python code using black, don't include blender
-	python -m isort objaverse_xl
-	python -m black objaverse_xl
+	python -m isort objaverse
+	python -m black objaverse
 	python -m isort scripts/**/*.py --skip scripts/rendering/blender-3.2.2-linux-x64/
 	python -m black scripts --exclude scripts/rendering/blender-3.2.2-linux-x64/
 
