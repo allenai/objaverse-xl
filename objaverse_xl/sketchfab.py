@@ -22,13 +22,17 @@ from objaverse_xl.utils import get_file_hash
 class SketchfabDownloader(ObjaverseSource):
     """A class for downloading and processing Objaverse 1.0."""
 
-    def get_annotations(self, download_dir: str = "~/.objaverse") -> pd.DataFrame:
+    def get_annotations(
+        self, download_dir: str = "~/.objaverse", refresh: bool = False
+    ) -> pd.DataFrame:
         """Load the annotations from the given directory.
 
         Args:
             download_dir (str, optional): The directory to load the annotations from.
                 Supports all file systems supported by fsspec. Defaults to
                 "~/.objaverse".
+            refresh (bool, optional): Whether to refresh the annotations by downloading
+                them from the remote source. Defaults to False.
 
         Returns:
             pd.DataFrame: The annotations, which includes the columns "thingId", "fileId",
@@ -38,7 +42,7 @@ class SketchfabDownloader(ObjaverseSource):
         download_path = os.path.join(download_dir, "sketchfab", "sketchfab.parquet")
         fs, path = fsspec.core.url_to_fs(download_path)
 
-        if not fs.exists(path):
+        if refresh or not fs.exists(path):
             fs.makedirs(os.path.dirname(path), exist_ok=True)
             logger.info(f"Downloading {remote_url} to {download_path}")
             response = requests.get(remote_url)

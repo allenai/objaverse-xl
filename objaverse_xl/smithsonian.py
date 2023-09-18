@@ -19,12 +19,17 @@ from objaverse_xl.utils import get_file_hash, get_uid_from_str
 class SmithsonianDownloader(ObjaverseSource):
     """Script to download objects from the Smithsonian Institute."""
 
-    def get_annotations(self, download_dir: str = "~/.objaverse") -> pd.DataFrame:
+    def get_annotations(
+        self, download_dir: str = "~/.objaverse", refresh: bool = False
+    ) -> pd.DataFrame:
         """Loads the Smithsonian Object Metadata dataset as a Pandas DataFrame.
 
         Args:
-            download_dir (str, optional): Directory to download the parquet metadata file.
-                Supports all file systems supported by fsspec. Defaults to "~/.objaverse".
+            download_dir (str, optional): Directory to download the parquet metadata
+                file. Supports all file systems supported by fsspec. Defaults to
+                "~/.objaverse".
+            refresh (bool, optional): Whether to refresh the annotations by downloading
+                them from the remote source. Defaults to False.
 
         Returns:
             pd.DataFrame: Smithsonian Object Metadata dataset as a Pandas DataFrame with
@@ -36,7 +41,7 @@ class SmithsonianDownloader(ObjaverseSource):
         fs.makedirs(os.path.dirname(path), exist_ok=True)
 
         # download the parquet file if it doesn't exist
-        if not fs.exists(path):
+        if refresh or not fs.exists(path):
             url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/smithsonian/smithsonian.parquet"
             logger.info(f"Downloading {url} to {filename}")
             response = requests.get(url)

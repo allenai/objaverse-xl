@@ -10,13 +10,17 @@ class ObjaverseSource(ABC):
     """Abstract class for Objaverse-XL sources."""
 
     @abstractmethod
-    def get_annotations(self, download_dir: str = "~/.objaverse") -> pd.DataFrame:
+    def get_annotations(
+        self, download_dir: str = "~/.objaverse", refresh: bool = False
+    ) -> pd.DataFrame:
         """Loads the 3D object metadata as a Pandas DataFrame.
 
         Args:
             download_dir (str, optional): Directory to download the parquet metadata
                 file. Supports all file systems supported by fsspec. Defaults to
                 "~/.objaverse".
+            refresh (bool, optional): Whether to refresh the annotations by downloading
+                them from the remote source. Defaults to False.
 
         Returns:
             pd.DataFrame: Metadata of the 3D objects as a Pandas DataFrame with columns

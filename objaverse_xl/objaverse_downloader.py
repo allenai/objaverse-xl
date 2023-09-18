@@ -24,13 +24,17 @@ class ObjaverseDownloader(ObjaverseSource):
             "sketchfab": SketchfabDownloader(),
         }
 
-    def get_annotations(self, download_dir: str = "~/.objaverse") -> pd.DataFrame:
+    def get_annotations(
+        self, download_dir: str = "~/.objaverse", refresh: bool = False
+    ) -> pd.DataFrame:
         """Loads the 3D object metadata as a Pandas DataFrame.
 
         Args:
             download_dir (str, optional): Directory to download the parquet metadata
                 file. Supports all file systems supported by fsspec. Defaults to
                 "~/.objaverse".
+            refresh (bool, optional): Whether to refresh the annotations by downloading
+                them from the remote source. Defaults to False.
 
         Returns:
             pd.DataFrame: Metadata of the 3D objects as a Pandas DataFrame with columns
@@ -38,7 +42,7 @@ class ObjaverseDownloader(ObjaverseSource):
                 "sha256", and "metadata".
         """
         annotations = [
-            downloader.get_annotations(download_dir)
+            downloader.get_annotations(download_dir=download_dir, refresh=refresh)
             for downloader in self.downloaders.values()
         ]
         return pd.concat(annotations, ignore_index=True)
