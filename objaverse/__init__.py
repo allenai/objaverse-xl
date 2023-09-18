@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 BASE_PATH = os.path.join(os.path.expanduser("~"), ".objaverse")
 
-__version__ = "0.1.3"
+__version__ = "<REPLACE_WITH_VERSION>"
 _VERSIONED_PATH = os.path.join(BASE_PATH, "hf-objaverse-v1")
 
 

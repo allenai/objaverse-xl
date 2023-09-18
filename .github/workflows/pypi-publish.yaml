@@ -22,6 +22,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
+    - name: Update __init__.py with new version locally
+      if: ${{ steps.regex-match.outputs.match != '' }}
+      run: |
+        sed -i "s/__version__ = \"<REPLACE_WITH_VERSION>\"/__version__ = \"${{ steps.regex-match.outputs.group1 }}\"/" objaverse/__init__.py
     - name: Release
       if: ${{ steps.regex-match.outputs.match != '' }}
       uses: softprops/action-gh-release@v1
