@@ -343,7 +343,7 @@ def render_objects(
     download_dir: Optional[str] = None,
     num_renders: int = 12,
     processes: Optional[int] = None,
-    save_repo_format: Optional[Literal["zip", "tar", "tar.gz"]] = None,
+    save_repo_format: Optional[Literal["zip", "tar", "tar.gz", "files"]] = None,
     only_northern_hemisphere: bool = False,
     render_timeout: int = 300,
     gpu_devices: Optional[Union[int, List[int]]] = None,
@@ -359,8 +359,9 @@ def render_objects(
         processes (Optional[int], optional): Number of processes to use for downloading
             the objects. If None, defaults to multiprocessing.cpu_count() * 3. Defaults
             to None.
-        save_repo_format (Optional[Literal["zip", "tar", "tar.gz"]], optional): If not
-            None, the GitHub repo will be deleted after rendering each object from it.
+        save_repo_format (Optional[Literal["zip", "tar", "tar.gz", "files"]], optional):
+            If not None, the GitHub repo will be deleted after rendering each object
+            from it.
         only_northern_hemisphere (bool, optional): Only render the northern hemisphere
             of the object. Useful for rendering objects that are obtained from
             photogrammetry, since the southern hemisphere is often has holes. Defaults
