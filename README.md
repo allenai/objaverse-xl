@@ -44,7 +44,7 @@ Beyond that, we show strong scaling trends for both Zero123-XL and [PixelNeRF](h
 
 ## Tutorial
 
-Check out the [Google Colab tutorial](https://colab.research.google.com/drive/15XpZMjrHXuky0IgBbXcsUtb_0g-XWYmN?usp=sharing) to download Objaverse-XL (work in progress).
+Check out the [Google Colab tutorial](https://colab.research.google.com/drive/15XpZMjrHXuky0IgBbXcsUtb_0g-XWYmN?usp=sharing) to download Objaverse-XL .
 
 ## Blender Rendering
 

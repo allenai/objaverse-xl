@@ -133,6 +133,28 @@ Finally, we also have a `metadata.json` file, which contains metadata about the 
 
 ### 🎛 Configuration
 
+Inside of `main.py` there is a `render_objects` function that provides various parameters allowing for customization during the rendering process:
+
+- `render_dir: str = "~/.objaverse"`: The directory where the objects will be rendered. Default is `"~/.objaverse"`.
+- `download_dir: Optional[str] = None`: The directory where the objects will be downloaded. Thanks to fsspec, we support writing files to many file systems. To use it, simply use the prefix of your filesystem before the path. For example hdfs://, s3://, http://, gcs://, or ssh://. Some of these file systems require installing an additional package (for example s3fs for s3, gcsfs for gcs, fsspec/sshfs for ssh). Start [here](https://github.com/rom1504/img2dataset#file-system-support) for more details on fsspec. If None, the objects will be deleted after they are rendered.
+- `num_renders: int = 12`: The number of renders to save for each object. Defaults to `12`.
+- `processes: Optional[int] = None`: The number of processes to utilize for downloading the objects. If left as `None` (default), it will default to `multiprocessing.cpu_count() * 3`.
+- `save_repo_format: Optional[Literal["zip", "tar", "tar.gz", "files"]] = None`: If specified, the GitHub repository will be deleted post rendering each object from it. Available options are `"zip"`, `"tar"`, and `"tar.gz"`. If `None` (default), no action is taken.
+- `only_northern_hemisphere: bool = False`: If `True`, only the northern hemisphere of the object is rendered. This is useful for objects acquired via photogrammetry, as the southern hemisphere may have holes. Default is `False`.
+- `render_timeout: int = 300`: Maximum number of seconds to await completion of the rendering job. Default is `300` seconds.
+- `gpu_devices: Optional[Union[int, List[int]]] = None`: Specifies GPU device(s) for rendering. If an `int`, the GPU device is randomly chosen from `0` to `gpu_devices - 1`. If a `List[int]`, a GPU device is randomly chosen from the list. If `0`, the CPU is used. If `None` (default), all available GPUs are utilized.
+
+To tweak the objects that you want to render, go into `main.py` and update the `get_example_objects` function.
+
+#### Example
+
+To render objects using a custom configuration:
+
+```bash
+python3 main.py --render_dir s3://bucket/render/directory --num_renders 15 --only_northern_hemisphere True
+```
+
+
 ### 🧑‍🔬️ Experimental Features
 
 USDZ support is experimental. Since Blender does not natively support usdz, we use [this Blender addon](https://github.com/robmcrosby/BlenderUSDZ), but it doesn't work with all types of USDZs. If you have a better solution, PRs are very much welcome 😄!
