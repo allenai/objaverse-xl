@@ -17,7 +17,7 @@ import GPUtil
 import pandas as pd
 from loguru import logger
 
-from objaverse import ObjaverseDownloader
+import objaverse.xl as oxl
 from objaverse.utils import get_uid_from_str
 
 
@@ -424,8 +424,7 @@ def render_objects(
     # shuffle the objects
     objects = objects.sample(frac=1).reset_index(drop=True)
 
-    objaverse_dl = ObjaverseDownloader()
-    objaverse_dl.download_objects(
+    oxl.download_objects(
         objects=objects,
         processes=processes,
         save_repo_format=save_repo_format,
