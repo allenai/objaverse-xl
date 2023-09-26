@@ -46,6 +46,8 @@ Beyond that, we show strong scaling trends for both Zero123-XL and [PixelNeRF](h
 
 Check out the [Google Colab tutorial](https://colab.research.google.com/drive/15XpZMjrHXuky0IgBbXcsUtb_0g-XWYmN?usp=sharing) to download Objaverse-XL .
 
+Polycam data is available by Polycam to academic researchers for non-commercial use upon request and approval from Polycam. For access please fill out [this form](https://forms.gle/HUjYVtS9GKVS5QBXA).
+
 ## Blender Rendering
 
 Blender rendering scripts are available in the [scripts/rendering directory](https://github.com/allenai/objaverse-xl/tree/main/scripts/rendering)!
