@@ -41,6 +41,31 @@ def get_annotations(
     return pd.concat(annotations, ignore_index=True)
 
 
+def get_alignment_annotations(
+    download_dir: str = "~/.objaverse", refresh: bool = False
+) -> pd.DataFrame:
+    """Loads the 3D object metadata for the objects used during alignment fine-tuning.
+
+    Args:
+        download_dir (str, optional): Directory to download the parquet metadata
+            file. Supports all file systems supported by fsspec. Defaults to
+            "~/.objaverse".
+        refresh (bool, optional): Whether to refresh the annotations by downloading
+            them from the remote source. Defaults to False.
+
+    Returns:
+        pd.DataFrame: Metadata of the 3D objects as a Pandas DataFrame with columns
+            for the object "fileIdentifier", "license", "source", "fileType",
+            "sha256", and "metadata".
+    """
+    annotations = [
+        downloader.get_alignment_annotations(download_dir=download_dir, refresh=refresh)
+        for source, downloader in downloaders.items()
+        if source in {"github", "sketchfab"}
+    ]
+    return pd.concat(annotations, ignore_index=True)
+
+
 def download_objects(
     objects: pd.DataFrame,
     download_dir: Optional[str] = "~/.objaverse",

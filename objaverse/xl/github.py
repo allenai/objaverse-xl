@@ -39,6 +39,28 @@ class GitHubDownloader(ObjaverseSource):
     """Script to download objects from GitHub."""
 
     @classmethod
+    def _get_annotations(
+        cls, url: str, filename: str, download_dir: str, refresh: bool
+    ) -> pd.DataFrame:
+        filename = os.path.join(download_dir, "github", filename)
+        fs, path = fsspec.core.url_to_fs(filename)
+        fs.makedirs(os.path.dirname(path), exist_ok=True)
+
+        # download the parquet file if it doesn't exist
+        if refresh or not fs.exists(path):
+            logger.info(f"Downloading {url} to {filename}")
+            response = requests.get(url)
+            response.raise_for_status()
+            with fs.open(path, "wb") as file:
+                file.write(response.content)
+
+        # load the parquet file with fsspec
+        with fs.open(path) as f:
+            df = pd.read_parquet(f)
+
+        return df
+
+    @classmethod
     def get_annotations(
         cls, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
@@ -56,24 +78,37 @@ class GitHubDownloader(ObjaverseSource):
                 for the object "fileIdentifier", "license", "source", "fileType",
                 "sha256", and "metadata".
         """
-        filename = os.path.join(download_dir, "github", "github.parquet")
-        fs, path = fsspec.core.url_to_fs(filename)
-        fs.makedirs(os.path.dirname(path), exist_ok=True)
+        return cls._get_annotations(
+            url="https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/github/github.parquet",
+            filename="github.parquet",
+            download_dir=download_dir,
+            refresh=refresh,
+        )
 
-        # download the parquet file if it doesn't exist
-        if refresh or not fs.exists(path):
-            url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/github/github.parquet"
-            logger.info(f"Downloading {url} to {filename}")
-            response = requests.get(url)
-            response.raise_for_status()
-            with fs.open(path, "wb") as file:
-                file.write(response.content)
+    @classmethod
+    def get_alignment_annotations(
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
+    ) -> pd.DataFrame:
+        """Loads the alignment fine-tuning metadata as a Pandas DataFrame.
 
-        # load the parquet file with fsspec
-        with fs.open(path) as f:
-            df = pd.read_parquet(f)
+        Args:
+            download_dir (str, optional): Directory to download the parquet metadata
+                file. Supports all file systems supported by fsspec. Defaults to
+                "~/.objaverse".
+            refresh (bool, optional): Whether to refresh the annotations by downloading
+                them from the remote source. Defaults to False.
 
-        return df
+        Returns:
+            pd.DataFrame: GitHub 3D object metadata as a Pandas DataFrame with columns
+                for the object "fileIdentifier", "license", "source", "fileType",
+                "sha256", and "metadata".
+        """
+        return cls._get_annotations(
+            url="https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/github/alignment.parquet",
+            filename="alignment.parquet",
+            download_dir=download_dir,
+            refresh=refresh,
+        )
 
     @classmethod
     def _get_repo_id_with_hash(cls, item: pd.Series) -> str:

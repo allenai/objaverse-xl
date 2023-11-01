@@ -23,6 +23,33 @@ class SketchfabDownloader(ObjaverseSource):
     """A class for downloading and processing Objaverse 1.0."""
 
     @classmethod
+    def _get_annotations(
+        cls,
+        url: str,
+        filename: str,
+        download_dir: str,
+        refresh: bool,
+    ) -> pd.DataFrame:
+        download_path = os.path.join(download_dir, "sketchfab", filename)
+        fs, path = fsspec.core.url_to_fs(download_path)
+
+        if refresh or not fs.exists(path):
+            fs.makedirs(os.path.dirname(path), exist_ok=True)
+            logger.info(f"Downloading {url} to {download_path}")
+            response = requests.get(url)
+            response.raise_for_status()
+            with fs.open(path, "wb") as file:
+                file.write(response.content)
+
+        # read the file with pandas and fsspec
+        with fs.open(download_path, "rb") as f:
+            annotations_df = pd.read_parquet(f)
+
+        annotations_df["metadata"] = "{}"
+
+        return annotations_df
+
+    @classmethod
     def get_annotations(
         cls, download_dir: str = "~/.objaverse", refresh: bool = False
     ) -> pd.DataFrame:
@@ -39,25 +66,36 @@ class SketchfabDownloader(ObjaverseSource):
             pd.DataFrame: The annotations, which includes the columns "thingId", "fileId",
                 "filename", and "license".
         """
-        remote_url = "https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/sketchfab/sketchfab.parquet"
-        download_path = os.path.join(download_dir, "sketchfab", "sketchfab.parquet")
-        fs, path = fsspec.core.url_to_fs(download_path)
+        return cls._get_annotations(
+            url="https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/sketchfab/sketchfab.parquet",
+            filename="sketchfab.parquet",
+            download_dir=download_dir,
+            refresh=refresh,
+        )
 
-        if refresh or not fs.exists(path):
-            fs.makedirs(os.path.dirname(path), exist_ok=True)
-            logger.info(f"Downloading {remote_url} to {download_path}")
-            response = requests.get(remote_url)
-            response.raise_for_status()
-            with fs.open(path, "wb") as file:
-                file.write(response.content)
+    @classmethod
+    def get_alignment_annotations(
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
+    ) -> pd.DataFrame:
+        """Load the annotations that were used for alignment fine-tuning.
 
-        # read the file with pandas and fsspec
-        with fs.open(download_path, "rb") as f:
-            annotations_df = pd.read_parquet(f)
+        Args:
+            download_dir (str, optional): The directory to load the annotations from.
+                Supports all file systems supported by fsspec. Defaults to
+                "~/.objaverse".
+            refresh (bool, optional): Whether to refresh the annotations by downloading
+                them from the remote source. Defaults to False.
 
-        annotations_df["metadata"] = "{}"
-
-        return annotations_df
+        Returns:
+            pd.DataFrame: The annotations, which includes the columns "thingId", "fileId",
+                "filename", and "license".
+        """
+        return cls._get_annotations(
+            url="https://huggingface.co/datasets/allenai/objaverse-xl/resolve/main/sketchfab/alignment.parquet",
+            filename="alignment.parquet",
+            download_dir=download_dir,
+            refresh=refresh,
+        )
 
     @classmethod
     def get_full_annotations(
