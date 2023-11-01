@@ -30,6 +30,20 @@ class SketchfabDownloader(ObjaverseSource):
         download_dir: str,
         refresh: bool,
     ) -> pd.DataFrame:
+        """Load the annotations from a given file URL.
+
+        Args:
+            url (str): The URL to the annotations file.
+            filename (str): The filename of the annotations file.
+            download_dir (str): The directory to load the annotations from.
+                Supports all file systems supported by fsspec.
+            refresh (bool): Whether to refresh the annotations by downloading
+                them from the remote source.
+
+        Returns:
+            pd.DataFrame: The annotations, which includes the columns "thingId", "fileId",
+                "filename", and "license".
+        """
         download_path = os.path.join(download_dir, "sketchfab", filename)
         fs, path = fsspec.core.url_to_fs(download_path)
 

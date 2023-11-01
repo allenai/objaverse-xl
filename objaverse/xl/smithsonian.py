@@ -57,6 +57,27 @@ class SmithsonianDownloader(ObjaverseSource):
         return df
 
     @classmethod
+    def get_alignment_annotations(
+        cls, download_dir: str = "~/.objaverse", refresh: bool = False
+    ) -> pd.DataFrame:
+        """Loads the 3D object metadata that was used for alignment fine-tuning.
+
+        Args:
+            download_dir (str, optional): Directory to download the parquet metadata
+                file. Supports all file systems supported by fsspec. Defaults to
+                "~/.objaverse".
+            refresh (bool, optional): Whether to refresh the annotations by downloading
+                them from the remote source. Defaults to False.
+
+        Returns:
+            pd.DataFrame: Metadata of the 3D objects as a Pandas DataFrame with columns
+                for the object "fileIdentifier", "license", "source", "fileType",
+                "sha256", and "metadata".
+        """
+        logger.info("Smithsonian objects weren't used during alignment annotations")
+        return pd.DataFrame()
+
+    @classmethod
     def _download_smithsonian_object(
         cls,
         file_identifier: str,
