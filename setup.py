@@ -10,7 +10,7 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
 
 setup(
     name="objaverse",
-    version="0.1.5",
+    version="0.1.7",
     author="Allen Institute for AI",
     author_email="mattd@allenai.org",
     description="Objaverse is an open dataset with over 10 million 3D objects",
