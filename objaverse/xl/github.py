@@ -141,6 +141,18 @@ class GitHubDownloader(ObjaverseSource):
         Returns:
             bool: True if the clone was successful, False otherwise.
         """
+        # check the repo is valid.
+        repo_check_url = repo_url[0:-4]
+        result = subprocess.run(
+            ["curl", "-o", "/dev/null",  "-s", "-w", "%{http_code}", repo_check_url],
+            capture_output=True,
+            check=True,
+        )
+        status_code = int(result.stdout.strip().decode("utf-8"))
+        if status_code == 404:
+            logger.error(f"Repo {repo_url} not found.")
+            return False
+            
         return cls._run_command_with_check(
             ["git", "clone", "--depth", "1", repo_url, target_directory],
         )
