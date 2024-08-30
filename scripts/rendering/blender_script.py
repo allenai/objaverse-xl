@@ -69,6 +69,7 @@ def _sample_spherical(
     maxz: float = 1.6,
     minz: float = -0.75,
 ) -> np.ndarray:
+    # 在最大半径和最小半径的球壳之间随机一个点，其中z取值在maxz和minz之间
     """Sample a random point in a spherical shell.
 
     Args:
@@ -91,7 +92,7 @@ def _sample_spherical(
             correct = True
     return vec
 
-
+# 可以直接固定 x,y,z的值用来固定相机的位置，可以将radius范围扩大
 def randomize_camera(
     radius_min: float = 1.5,
     radius_max: float = 2.2,
